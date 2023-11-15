@@ -5,4 +5,7 @@
 
 Miniprojekti on täällä
 
+
 https://tree.taiga.io/project/sevonj-miniprojekti/
+
+https://app.codecov.io/gh/sevonj/miniprojekti
