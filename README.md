@@ -6,6 +6,6 @@
 Miniprojekti on täällä
 
 
-https://tree.taiga.io/project/sevonj-miniprojekti/
+[Backlog](https://tree.taiga.io/project/sevonj-miniprojekti/)
 
-https://app.codecov.io/gh/sevonj/miniprojekti
+[Codecov](https://app.codecov.io/gh/sevonj/miniprojekti)
