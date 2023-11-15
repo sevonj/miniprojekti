@@ -1,6 +1,7 @@
+from app import App
+
 def main():
-    print("Hello world")
-    print("more stuff")
+    app = App()
 
 
 if __name__ == "__main__":
