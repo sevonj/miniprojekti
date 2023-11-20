@@ -1,39 +1,50 @@
-# User can add entries
-# Another function can fetch all entries
+from pybtex.database import BibliographyData, Entry
 
-
+# Create a Get_Entries class with hardcoded entry data
 class Get_Entries:
-    ''' The interface where a user input their entry.'''
-
     def __init__(self):
-        self.entries = []
+        self.entries = BibliographyData()
 
-    def add_entry(self):
-        """Just a beginner interface, ideally we need to check
-        what the user's input is (limit length, strigify etc...) Also later think
-        about the way our entry form should be shaped"""
-
+    def input_entry(self):
+        
         while True:
-            entry = str(input('Add entry: '))
-            if len(entry) == 0:
-                print('The entry is empty, try again')
+            print("Enter article citation details:")
+            author = input('Author: ')
+            title = input('Title: ')
+            journal = input('Journal: ')
+            year = input('Year: ')
+            volume = input('Volume: ')
+            number = input('Number: ')
+            pages = input('Pages: ')
+
+            if not any([author, title, journal, year, volume, number, pages]):
+                print('An entry is missing, try again.')
             else:
-                self.entries.append(entry)  # Append the entry to the entries list
+                # Create an Entry object representing the article citation
+                entry = Entry('article', fields={
+                    'author': author,
+                    'title': title,
+                    'journal': journal,
+                    'year': year,
+                    'volume': volume,
+                    'number': number,
+                    'pages': pages
+                })
+
+                # Add the entry to the BibliographyData
+                self.entries.add_entry('article-minimal', entry)
                 print("Entry successfully saved to the database.")
                 break
-    
-    def get_all_entires(self):
-        ''' spit out all the entries in a list '''
-        return(self.entries)
+
+    def get_all_entries(self):
+        ''' Return all the entries in a list '''
+        return self.entries
 
 entries_app = Get_Entries()
 
-entries_app.add_entry()
-entries_app.add_entry()
-entries_app.add_entry()
-entries_app.add_entry()
+entries_app.input_entry()
 
-entries = entries_app.get_all_entires()
-
-for entry in entries:
-    print(entry)
+# Get the entries and print them in BibTeX format
+entries = entries_app.get_all_entries()
+print(entries)
+print(entries.to_string('bibtex'))
