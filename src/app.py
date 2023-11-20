@@ -45,7 +45,7 @@ class App:
                 self._bib_data.add_entry("article-minimal", entry)
                 print("Entry successfully saved to the database.")
                 break
-    
+    #hello
     def get_entries(self):
         """Get the entries from the bibliography
 
