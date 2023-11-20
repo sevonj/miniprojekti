@@ -6,7 +6,7 @@ class Get_Entries:
         self.entries = BibliographyData()
 
     def input_entry(self):
-        
+
         while True:
             print("Enter article citation details:")
             author = input('Author: ')
@@ -35,7 +35,7 @@ class Get_Entries:
                 self.entries.add_entry('article-minimal', entry)
                 print("Entry successfully saved to the database.")
                 break
-
+                #hello
     def get_all_entries(self):
         ''' Return all the entries in a list '''
         return self.entries
