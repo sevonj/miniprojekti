@@ -1,3 +1,9 @@
+"""
+main.py
+
+This module is the front for the app.
+
+"""
 from app import App
 
 
