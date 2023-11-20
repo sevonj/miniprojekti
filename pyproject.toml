@@ -20,3 +20,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 filterwarnings = 'ignore::DeprecationWarning:pybtex.*:'
+
+[tool.coverage.run]
+source = ['src']
+omit = ['src/tests/**']
+
