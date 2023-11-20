@@ -1,5 +1,8 @@
 """
-This file containt unit tests for the App class.
+app_test.py
+
+This module contains unit tests for the App class.
+
 """
 # pylint: disable=protected-access missing-class-docstring missing-function-docstring
 
