@@ -4,7 +4,7 @@ from app import App
 def main():
     app = App()
     app.create_bib()
-
+    
     # App loop
     while True:
         command = input("Enter command (ADD/LIST/EXIT): ").upper().strip()

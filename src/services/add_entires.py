@@ -54,3 +54,4 @@ entries = entries_app.get_all_entries()
 print("Entries (BibTex):")
 for key, entry in entries.items():
     print(entry.to_string("bibtex"))
+

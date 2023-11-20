@@ -12,7 +12,7 @@ class App:
         print("initializing")
         self._bib_data = BibliographyData()
     
-    def get_entries(self):
+    def add_entries(self):
         ''' Takes user's input fir the article citation '''
         while True:
             print("Enter article citation details:")
@@ -45,4 +45,20 @@ class App:
                 self._bib_data.add_entry("article-minimal", entry)
                 print("Entry successfully saved to the database.")
                 break
+    
+    def get_entries(self):
+        """Get the entries from the bibliography
+
+        Returns:
+            entries: the entries from the bibliography
+            message: a message describing the result of the operation
+        """
+        try:
+            if not self._bib_data.entries:
+                return None, "No entries found"
+
+            return self._bib_data.entries, "Successfully retrieved entries"
+
+        except Exception as e:  # pylint: disable=broad-except
+            return None, f"Failed to retrieve entries: {e}"
                 
