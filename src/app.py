@@ -48,7 +48,6 @@ class App:
                 print("Entry successfully saved to the database.")
                 break
 
-    # hello
     def get_entries(self):
         """Get the entries from the bibliography
 
