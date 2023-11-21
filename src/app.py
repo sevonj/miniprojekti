@@ -1,3 +1,10 @@
+"""
+app.py
+
+This module contains the service which the UI code can call.
+It should be kept UI-independent; No UI code here.
+
+"""
 from pybtex.database import BibliographyData, Entry
 
 
