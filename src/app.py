@@ -2,7 +2,11 @@ from pybtex.database import BibliographyData, Entry
 
 
 class App:
-    """main app"""
+    """
+    Application class
+    UI-agnostic Application logic.
+    """
+
     def __init__(self):
         print("This is the app")
         self._bib_data = None
@@ -11,18 +15,18 @@ class App:
         """Load an empty bibliography"""
         print("initializing")
         self._bib_data = BibliographyData()
-    
+
     def add_entries(self):
-        ''' Takes user's input fir the article citation '''
+        """Takes user's input fir the article citation"""
         while True:
             print("Enter article citation details:")
-            author = input('Author: ')
-            title = input('Title: ')
-            journal = input('Journal: ')
-            year = input('Year: ')
-            volume = input('Volume: ')
-            number = input('Number: ')
-            pages = input('Pages: ')
+            author = input("Author: ")
+            title = input("Title: ")
+            journal = input("Journal: ")
+            year = input("Year: ")
+            volume = input("Volume: ")
+            number = input("Number: ")
+            pages = input("Pages: ")
 
             if not any([author, title, journal, year, volume, number, pages]):
                 print("An entry is missing, try again.")
@@ -45,7 +49,8 @@ class App:
                 self._bib_data.add_entry("article-minimal", entry)
                 print("Entry successfully saved to the database.")
                 break
-    #hello
+
+    # hello
     def get_entries(self):
         """Get the entries from the bibliography
 
@@ -61,4 +66,3 @@ class App:
 
         except Exception as e:  # pylint: disable=broad-except
             return None, f"Failed to retrieve entries: {e}"
-                
