@@ -4,16 +4,17 @@ main.py
 This module is the front for the app.
 
 """
-from app import App
 from pybtex.database import Entry
+from app import App
 
 
 def get_entries(app: App):
+    """UI fn: Print all entries"""
     print(app.get_entries())
 
 
 def add_entries(app: App):
-    """Takes user's input for the article citation"""
+    """UI fn: Add a new entry"""
     print("Enter article citation details:")
     author = input("Author: ")
     title = input("Title: ")
@@ -47,6 +48,7 @@ def add_entries(app: App):
 
 
 def main():
+    """Main front"""
     app = App()
     app.create_bib()
 

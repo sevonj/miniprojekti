@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.10"
 pybtex = "^0.24.0"
 setuptools = "^69.0.2"
+pylint = "^3.0.2"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -26,3 +27,5 @@ filterwarnings = 'ignore::DeprecationWarning:pybtex.*:'
 source = ['src']
 omit = ['src/tests/**']
 
+[tool.pylint.MAIN]
+ignore-docstrings = 'yes'

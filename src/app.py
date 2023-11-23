@@ -38,5 +38,9 @@ class App:
             return None, f"Failed to retrieve entries: {e}"
 
     def add_entry(self, entry: Entry):
+        """
+        params:
+            entry: this will be added
+        """
         key = str(len(self._bib_data.entries))
         self._bib_data.add_entry(key, entry)
