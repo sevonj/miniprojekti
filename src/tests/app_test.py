@@ -77,7 +77,7 @@ class TestApp(unittest.TestCase):
 
     def test_delete_all_entries_works(self):
 
-        # populating entries via an earlier test
+        # populating 1 entry via an earlier test
         self.test_add_entry()
 
         # deleting ALL entries should return None (implicitly)
@@ -93,4 +93,59 @@ class TestApp(unittest.TestCase):
         self.assertEqual(
             "\n\tERROR: you're trying to delete a non-existing entry\n",
             self.app.del_entries(["non-existent key"])
+        )
+
+    def test_delete_specific_entries_works(self):
+
+        # populating 1 entry via an earlier test
+        self.test_add_entry()
+
+        # adding +1 entry so we have more than one
+        entry = Entry(
+            "article",
+            fields={
+                "author": "Author2",
+                "title": "Title2",
+                "journal": "Journal2",
+                "year": "Year2",
+                "volume": "Volume2",
+                "number": "Number2",
+                "pages": "Pages2",
+            },
+        )
+        self.app.add_entry(entry)
+
+        # adding a 3rd entry
+        entry = Entry(
+            "article",
+            fields={
+                "author": "Author3",
+                "title": "Title3",
+                "journal": "Journal3",
+                "year": "Year3",
+                "volume": "Volume3",
+                "number": "Number3",
+                "pages": "Pages3",
+            },
+        )
+        self.app.add_entry(entry)
+
+        # storing keys of entries here
+        entries, _msg = self.app.get_entries()
+        keys = list(key for key in entries)
+
+        # deleting 1st and 2nd entry
+        self.assertIsNone(self.app.del_entries(keys[0:2]))
+
+        # should have 1 entry left
+        entries, _msg = self.app.get_entries()
+        self.assertEqual(len(entries), 1)
+
+        # deleting 3rd entry (which is the only one at this point, but keys are still valid)
+        self.assertIsNone(self.app.del_entries(keys[2:]))
+
+        # entries should be empty
+        self.assertTupleEqual(
+            self.app.get_entries(),
+            (None, "No entries found")
         )
