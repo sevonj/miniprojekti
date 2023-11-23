@@ -62,7 +62,10 @@ class TestApp(unittest.TestCase):
         )
 
         # no entries in the beginning
-        self.assertTupleEqual(self.app.get_entries(), (None, "No entries found"))
+        self.assertTupleEqual(
+            self.app.get_entries(),
+            (None, "No entries found")
+        )
 
         self.app.add_entry(entry)
 
@@ -70,4 +73,24 @@ class TestApp(unittest.TestCase):
         self.assertTupleEqual(
             self.app.get_entries(),
             (self.app._bib_data.entries, "Successfully retrieved entries"),
+        )
+
+    def test_delete_all_entries_works(self):
+
+        # populating entries via an earlier test
+        self.test_add_entry()
+
+        # deleting ALL entries should return None (implicitly)
+        self.assertIsNone(self.app.del_entries())
+
+        # entries should be empty
+        self.assertTupleEqual(
+            self.app.get_entries(),
+            (None, "No entries found")
+        )
+
+    def test_deleting_non_existing_entry_handles_key_error(self):
+        self.assertEqual(
+            "\n\tERROR: you're trying to delete a non-existing entry\n",
+            self.app.del_entries(["non-existent key"])
         )
