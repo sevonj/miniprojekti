@@ -64,4 +64,4 @@ class App:
                 del self._bib_data.entries[key]
 
         except KeyError:
-            print("\n\tERROR: you're trying to delete a non-existing entry\n")
+            return "\n\tERROR: you're trying to delete a non-existing entry\n"

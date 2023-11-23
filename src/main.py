@@ -59,7 +59,10 @@ def del_entries(app: App):
         "Are you sure you want to delete ALL entries? [y/N]: ").upper().strip()
 
     if len(reply) > 0 and reply[0] == "Y":
-        app.del_entries()
+        # needed this in order to cover the KeyError
+        message = app.del_entries()
+        if message:
+            print(message)
 
 
 def main():
