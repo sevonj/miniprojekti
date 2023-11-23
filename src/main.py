@@ -47,6 +47,21 @@ def add_entries(app: App):
     print("Entry successfully saved to the database.")
 
 
+def del_entries(app: App):
+    """Prompts the user whether they want to delete all stored entries.
+    Also calls app.del_entries() if so.
+
+    Args:
+        app (App): instance of app
+    """
+
+    reply = input(
+        "Are you sure you want to delete ALL entries? [y/N]: ").upper().strip()
+
+    if len(reply) > 0 and reply[0] == "Y":
+        app.del_entries()
+
+
 def main():
     """Main front"""
     app = App()
@@ -54,7 +69,9 @@ def main():
 
     # App loop
     while True:
-        command = input("Enter command (ADD/LIST/EXIT): ").upper().strip()
+        command = input(
+            "Enter command (ADD/LIST/DELETE/EXIT): "
+        ).upper().strip()
 
         match command:
             case "EXIT":
@@ -62,6 +79,9 @@ def main():
 
             case "ADD":
                 add_entries(app)
+
+            case "DELETE":
+                del_entries(app)
 
             case "LIST":
                 get_entries(app)
