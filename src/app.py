@@ -5,6 +5,7 @@ This module contains the service which the UI code can call.
 It should be kept UI-independent; No UI code here.
 
 """
+from uuid import uuid4
 from pybtex.database import BibliographyData, Entry
 
 
@@ -42,5 +43,5 @@ class App:
         params:
             entry: this will be added
         """
-        key = str(len(self._bib_data.entries))
+        key = str(uuid4())
         self._bib_data.add_entry(key, entry)
