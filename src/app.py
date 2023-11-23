@@ -45,3 +45,23 @@ class App:
         """
         key = str(uuid4())
         self._bib_data.add_entry(key, entry)
+
+    def del_entries(self, entries: list[str] = None):
+        """Deletes select entries, 
+
+        Args:
+            entries (list, optional): the stringkeys of entries to delete. Defaults to All entries.
+        """
+        try:
+            # deleting specific entries from the `entries` arg
+            if entries:
+                for key in entries:
+                    del self._bib_data.entries[key]
+                return
+
+            # getting ALL keys first avoiding mutation during iteration
+            for key in list(key for key in self._bib_data.entries):
+                del self._bib_data.entries[key]
+
+        except KeyError:
+            print("\n\tERROR: you're trying to delete a non-existing entry\n")
