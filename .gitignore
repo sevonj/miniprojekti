@@ -161,3 +161,8 @@ cython_debug/
 
 # Miniprojekti specific
 *.bib
+
+# Robot Framework
+log.html
+output.xml
+report.html

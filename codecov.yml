@@ -1,7 +1,8 @@
 coverage:
   status:
     project:
-      default: false 
-      src:
+      default:
         target: 0%  
-        paths: "src/"
+    patch:
+      default:
+        target: 0%
