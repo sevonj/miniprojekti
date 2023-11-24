@@ -66,7 +66,13 @@ def del_entries(io, app: App):
 
     # pretty formatting here
     # prolly simply call the listing function once done with the addition of indices
-    io.print(entries)
+    io.print(
+        f"\n{'ID':^3} | {'author':^10} | {'title':^10} | {'journal':^10} | {'year':^10}")
+    for idx, (_entry_key, entry) in enumerate(entries.items()):
+        field = entry.fields
+        io.print(
+            f"{idx:^3} | {field['author']:^10} | {field['title']:^10} | {field['journal']:^10} | {field['year']:^10}"
+        )
 
     reply = io.input(dedent(
         """
