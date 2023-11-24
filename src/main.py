@@ -5,6 +5,7 @@ This module is the front for the app.
 
 """
 from textwrap import dedent
+import re
 from pybtex.database import Entry
 from app_io import AppIO
 from app import App
@@ -49,16 +50,15 @@ def add_entries(io, app: App):
     io.print("Entry successfully saved to the database.")
 
 
-def del_entries(app: App):
-    """Implements UI for deleting one or more entries, calling app.del_entries([list]).
+re_idx = re.compile(r"\S+")
 
-    Args:
-        app (App): instance of app
-    """
+
+def del_entries(io, app: App):
+    """UI fn: delete one or more entries."""
 
     entries = app.get_entries()[0]
     if not entries:
-        print("there is nothing to delete")
+        io.print("there is nothing to delete")
         return
 
     valid_index_range = range(len(entries))
@@ -66,9 +66,9 @@ def del_entries(app: App):
 
     # pretty formatting here
     # prolly simply call the listing function once done with the addition of indices
-    print(entries)
+    io.print(entries)
 
-    reply = input(dedent(
+    reply = io.input(dedent(
         """
         Which entries do you want to remove? Type either:
         - indeces separated by whitespace, e.g. '0 1 5'
@@ -79,28 +79,34 @@ def del_entries(app: App):
 
     # not deleting anything
     if reply == "":
-        print("deletion of entries cancelled")
-        return
-
-    confirm = input(
-        f"Are you sure you want to delete entries: [{reply}]? [y/N]: ").upper().strip()
-
-    if len(confirm) == 0 or confirm[0] != "Y":
-        print("deletion of entries cancelled")
+        io.print("deletion of entries cancelled")
         return
 
     if reply != "ALL":
-        for idx_as_str in reply.split(" "):
+        for idx_as_str in re_idx.findall(reply):
             try:
                 idx = int(idx_as_str)
                 if idx not in valid_index_range:
-                    print(f"\n\tERROR: out-of-bounds index: {idx}\n")
+                    io.print(f"\n\tERROR: out-of-bounds index: {idx}\n")
                     return
                 indices_to_remove.append(idx)
 
             except ValueError:
-                print(f"\n\tERROR: unrecognized index: {idx_as_str}\n")
+                io.print(f"\n\tERROR: unrecognized index: {idx_as_str}\n")
                 return
+
+    confirm = io.input(
+        "Are you sure you want to delete "
+        + (
+            '*ALL* entries' if reply == 'ALL' else
+            f'entries with row numbers ({"".join(indices_to_remove)})'
+        )
+        + "? [y/N]: "
+    ).upper().strip()
+
+    if len(confirm) == 0 or confirm[0] != "Y":
+        io.print("deletion of entries cancelled")
+        return
 
     app.del_entries(indices_to_remove)
 
@@ -125,7 +131,7 @@ def main(io=None):
                 add_entries(io, app)
 
             case "DELETE":
-                del_entries(app)
+                del_entries(io, app)
 
             case "LIST":
                 get_entries(io, app)
