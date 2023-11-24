@@ -80,19 +80,12 @@ class TestApp(unittest.TestCase):
         # populating 1 entry via an earlier test
         self.test_add_entry()
 
-        # deleting ALL entries should return None (implicitly)
-        self.assertIsNone(self.app.del_entries())
+        self.app.del_entries([])
 
         # entries should be empty
         self.assertTupleEqual(
             self.app.get_entries(),
             (None, "No entries found")
-        )
-
-    def test_deleting_non_existing_entry_handles_key_error(self):
-        self.assertEqual(
-            "\n\tERROR: you're trying to delete a non-existing entry\n",
-            self.app.del_entries(["non-existent key"])
         )
 
     def test_delete_specific_entries_works(self):
@@ -132,17 +125,16 @@ class TestApp(unittest.TestCase):
 
         # storing keys of entries here
         entries, _msg = self.app.get_entries()
-        keys = list(key for key in entries)
 
         # deleting 1st and 2nd entry
-        self.assertIsNone(self.app.del_entries(keys[0:2]))
+        self.app.del_entries([0, 1])
 
         # should have 1 entry left
         entries, _msg = self.app.get_entries()
         self.assertEqual(len(entries), 1)
 
-        # deleting 3rd entry (which is the only one at this point, but keys are still valid)
-        self.assertIsNone(self.app.del_entries(keys[2:]))
+        # deleting 3rd entry
+        self.app.del_entries([0])
 
         # entries should be empty
         self.assertTupleEqual(

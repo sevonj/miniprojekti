@@ -4,6 +4,7 @@ main.py
 This module is the front for the app.
 
 """
+from textwrap import dedent
 from pybtex.database import Entry
 from app import App
 
@@ -48,21 +49,59 @@ def add_entries(app: App):
 
 
 def del_entries(app: App):
-    """Prompts the user whether they want to delete all stored entries.
-    Also calls app.del_entries() if so.
+    """Implements UI for deleting one or more entries, calling app.del_entries([list]).
 
     Args:
         app (App): instance of app
     """
 
-    reply = input(
-        "Are you sure you want to delete ALL entries? [y/N]: ").upper().strip()
+    entries = app.get_entries()[0]
+    if not entries:
+        print("there is nothing to delete")
+        return
 
-    if len(reply) > 0 and reply[0] == "Y":
-        # needed this in order to cover the KeyError
-        message = app.del_entries()
-        if message:
-            print(message)
+    valid_index_range = range(len(entries))
+    indices_to_remove = []
+
+    # pretty formatting here
+    # prolly simply call the listing function once done with the addition of indices
+    print(entries)
+
+    reply = input(dedent(
+        """
+        Which entries do you want to remove? Type either:
+        - indeces separated by whitespace, e.g. '0 1 5'
+        - or the word 'ALL' to remove all entries:
+
+        [none]: """
+    )).upper().strip()
+
+    # not deleting anything
+    if reply == "":
+        print("deletion of entries cancelled")
+        return
+
+    confirm = input(
+        f"Are you sure you want to delete entries: [{reply}]? [y/N]: ").upper().strip()
+
+    if len(confirm) == 0 or confirm[0] != "Y":
+        print("deletion of entries cancelled")
+        return
+
+    if reply != "ALL":
+        for idx_as_str in reply.split(" "):
+            try:
+                idx = int(idx_as_str)
+                if idx not in valid_index_range:
+                    print(f"\n\tERROR: out-of-bounds index: {idx}\n")
+                    return
+                indices_to_remove.append(idx)
+
+            except ValueError:
+                print(f"\n\tERROR: unrecognized index: {idx_as_str}\n")
+                return
+
+    app.del_entries(indices_to_remove)
 
 
 def main():
