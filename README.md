@@ -1,6 +1,7 @@
 # miniprojekti
 
-![CodeCov Badge](https://github.com/sevonj/miniprojekti/workflows/CI/badge.svg)
+![CI Badge](https://github.com/sevonj/miniprojekti/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/sevonj/miniprojekti/graph/badge.svg?token=YENFDFJKT2)](https://codecov.io/gh/sevonj/miniprojekti)
 
 
 Miniprojekti on täällä
