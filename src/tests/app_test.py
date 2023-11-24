@@ -9,7 +9,6 @@ This module contains unit tests for the App class.
 import unittest
 import io
 import sys
-from unittest.mock import patch
 from pybtex.database import BibliographyData, Entry
 from app import App
 
