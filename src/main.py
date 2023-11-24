@@ -50,8 +50,6 @@ def add_entries(io, app: App):
 
 def main(io=None):
     """Main front"""
-    if io is None:
-        io = AppIO()
 
     app = App()
     app.create_bib()
