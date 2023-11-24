@@ -31,10 +31,15 @@ class App:
         try:
             if not self._bib_data.entries:
                 return None, "No entries found"
+            
+            entries = self._bib_data.entries
 
-            return self._bib_data.entries, "Successfully retrieved entries"
+            if entries:
+                for key, entry in entries.items():
+                    print(entry.to_string('bibtex'))
+                return entries, "Successfully retrieved entries"
 
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:
             return None, f"Failed to retrieve entries: {e}"
 
     def add_entry(self, entry: Entry):

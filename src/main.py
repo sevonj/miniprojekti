@@ -10,7 +10,7 @@ from app import App
 
 def get_entries(app: App):
     """UI fn: Print all entries"""
-    print(app.get_entries())
+    app.get_entries()
 
 
 def add_entries(app: App):
