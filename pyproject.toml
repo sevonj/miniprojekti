@@ -30,4 +30,4 @@ omit = ['src/tests/**']
 
 [tool.pylint.MAIN]
 ignore-docstrings = 'yes'
-ignore-patterns='src/tests/**'
+ignore-patterns='src/tests/'
