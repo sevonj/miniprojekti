@@ -5,6 +5,7 @@ This module is the front for the app.
 
 """
 from pybtex.database import Entry
+from app_io import AppIO
 from app import App
 
 
@@ -34,24 +35,24 @@ Available commands:"""
         print(key.ljust(maxkeylen + 2), "-", commands[key])
 
 
-def get_entries(app: App):
+def get_entries(io, app: App):
     """UI fn: Print all entries"""
-    print(app.get_entries())
+    io.print(app.get_entries())
 
 
-def add_entries(app: App):
+def add_entries(io, app: App):
     """UI fn: Add a new entry"""
-    print("Enter article citation details:")
-    author = input("Author: ")
-    title = input("Title: ")
-    journal = input("Journal: ")
-    year = input("Year: ")
-    volume = input("Volume: ")
-    number = input("Number: ")
-    pages = input("Pages: ")
+    io.print("Enter article citation details:")
+    author = io.input("Author: ")
+    title = io.input("Title: ")
+    journal = io.input("Journal: ")
+    year = io.input("Year: ")
+    volume = io.input("Volume: ")
+    number = io.input("Number: ")
+    pages = io.input("Pages: ")
 
     if not any([author, title, journal, year, volume, number, pages]):
-        print("An entry is missing, try again.")
+        io.print("An entry is missing, try again.")
         return
 
     # Create an Entry object representing the article citation
@@ -70,17 +71,18 @@ def add_entries(app: App):
 
     # Add the entry to the BibliographyData
     app.add_entry(entry)
-    print("Entry successfully saved to the database.")
+    io.print("Entry successfully saved to the database.")
 
 
-def main():
+def main(io):
     """Main front"""
+
     app = App()
     app.create_bib()
 
     # App loop
     while True:
-        command = input("Enter command (type HELP for help): ").upper().strip()
+        command = io.input("Enter command (type HELP for help): ").upper().strip()
 
         match command:
             case "EXIT":
@@ -90,17 +92,17 @@ def main():
                 print_help()
 
             case "ADD":
-                add_entries(app)
+                add_entries(io, app)
 
             case "LIST":
-                get_entries(app)
+                get_entries(io, app)
 
             case _:
-                print(f"Unrecognized command: '{command}'")
+                io.print(f"Unrecognized command: '{command}'")
 
     # Exit message.
-    print("Have a nice day.")
+    io.print("Have a nice day.")
 
 
 if __name__ == "__main__":
-    main()
+    main(AppIO())

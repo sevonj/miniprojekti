@@ -15,6 +15,7 @@ pylint = "^3.0.2"
 [tool.poetry.group.dev.dependencies]
 coverage = "^7.3.2"
 pytest = "^7.4.3"
+robotframework = "^6.1.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -28,4 +29,5 @@ source = ['src']
 omit = ['src/tests/**']
 
 [tool.pylint.MAIN]
-disable=''
+ignore-docstrings = 'yes'
+ignore-patterns='src/tests/'
