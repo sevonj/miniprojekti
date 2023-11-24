@@ -21,7 +21,7 @@ class StubIO:
 
     def __init__(self) -> None:
         self._outputs = []
-        self._inputs = ["list", "list", "list", "list"]
+        self._inputs = []
 
     def print(self, *args) -> None:
         """Fake print for the app"""
@@ -29,7 +29,6 @@ class StubIO:
         # Turn args into string and store them
         output_text = " ".join(map(str, args))
         self._outputs.append(output_text)
-        print(self._outputs[-1])
 
     def input(self, *args) -> str | None:
         """Fake input for the app"""
@@ -40,7 +39,6 @@ class StubIO:
 
         if len(self._inputs) == 0:
             return None
-        print(self._outputs[-1])
 
         return self._inputs.pop(0)
 
@@ -52,7 +50,7 @@ class StubIO:
     def pop_output(self) -> str | None:
         """This allows test script to get outputs from the queue"""
 
-        if len(self._inputs) == 0:
+        if len(self._outputs) == 0:
             return None
 
         return self._outputs.pop(0)
