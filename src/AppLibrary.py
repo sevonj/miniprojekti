@@ -1,10 +1,12 @@
 """ Library for Robot Framework tests"""
-
+# pylint: disable=invalid-name
 from app_io import StubIO
 from main import main
 
 
 class AppLibrary:
+    """Manages the app IO for testing"""
+
     def __init__(self):
         self._io = StubIO()
 
@@ -28,4 +30,5 @@ class AppLibrary:
         self._io.pop_output()
 
     def run_application(self):
+        """Run the app with predetermined inputs."""
         main(self._io)

@@ -30,7 +30,7 @@ class StubIO:
         output_text = " ".join(map(str, args))
         self._outputs.append(output_text)
 
-    def input(self, *args) -> str | None:
+    def input(self, *_args) -> str | None:
         """Fake input for the app"""
 
         # Turn args into string and store them
