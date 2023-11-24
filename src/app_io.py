@@ -34,8 +34,9 @@ class StubIO:
         """Fake input for the app"""
 
         # Turn args into string and store them
-        output_text = " ".join(map(str, args))
-        self._outputs.append(output_text)
+        # Probably better without
+        # output_text = " ".join(map(str, args))
+        # self._outputs.append(output_text)
 
         if len(self._inputs) == 0:
             return None
