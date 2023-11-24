@@ -7,6 +7,9 @@ This module contains unit tests for the App class.
 # pylint: disable=protected-access missing-class-docstring missing-function-docstring
 
 import unittest
+import io
+import sys
+from unittest.mock import patch
 from pybtex.database import BibliographyData, Entry
 from app import App
 
@@ -71,3 +74,25 @@ class TestApp(unittest.TestCase):
             self.app.get_entries(),
             (self.app._bib_data.entries, "Successfully retrieved entries"),
         )
+
+        # Output in terminal is user-readable
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+        self.app.get_entries()
+        sys.stdout = sys.__stdout__
+        printed_content = captured_output.getvalue()
+
+        # Get the printed content from the StringIO object
+        expected_output = (
+            "@article{0,\n"
+            '    author = "Author",\n'
+            '    title = "Title",\n'
+            '    journal = "Journal",\n'
+            '    year = "Year",\n'
+            '    volume = "Volume",\n'
+            '    number = "Number",\n'
+            '    pages = "Pages"\n}'
+        )
+
+        # Assert that the captured printed content matches the expected output
+        self.assertEqual(printed_content.strip(), expected_output.strip())

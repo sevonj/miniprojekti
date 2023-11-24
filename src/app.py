@@ -29,15 +29,14 @@ class App:
             message: a message describing the result of the operation
         """
         try:
-            if not self._bib_data.entries:
-                return None, "No entries found"
-
             entries = self._bib_data.entries
 
-            if entries:
-                for key, entry in entries.items():
-                    print(entry.to_string("bibtex"))
-                return entries, "Successfully retrieved entries"
+            if not entries:
+                return None, "No entries found"
+
+            for _, entry in entries.items():
+                print(entry.to_string("bibtex"))
+            return (entries, "Successfully retrieved entries")
 
         except Exception as e:  # pylint: disable=broad-except
             return None, f"Failed to retrieve entries: {e}"
