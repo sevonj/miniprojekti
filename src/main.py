@@ -9,19 +9,20 @@ from app_io import AppIO
 from app import App
 
 
-def print_help():
+def print_help(io):
     """UI fn: Help"""
-    titlemessage = """M I N I P R O J E K T I
+    msg = """M I N I P R O J E K T I
 by Ryhmä4
-All commands are case insensitive. Arguments may not be.
 
-Available commands:"""
+Available commands (case-insensitive):
+"""
 
     # Dic of commands. Key is the command itself and the value is the description.
     commands = {
         "ADD": "Add a new entry to the bibliography",
-        "EXIT": "Exit app",
-        "LIST": "Show all entries",
+        "EXIT": "Exit",
+        "HELP": "Display this help message",
+        "LIST": "Display all entries",
     }
 
     # Force alphabetical order
@@ -30,9 +31,10 @@ Available commands:"""
     # Figure out how much padding is needed
     maxkeylen = max(len(key) for key in keys)
 
-    print(titlemessage)
     for key in keys:
-        print(key.ljust(maxkeylen + 2), "-", commands[key])
+        msg += key.ljust(maxkeylen + 2) + " - " + commands[key] + "\n"
+
+    io.print(msg)
 
 
 def get_entries(io, app: App):
@@ -82,14 +84,14 @@ def main(io):
 
     # App loop
     while True:
-        command = io.input("Enter command (type HELP for help): ").upper().strip()
+        command = io.input("Enter command (type HELP for help):\n> ").upper().strip()
 
         match command:
             case "EXIT":
                 break
 
             case "HELP":
-                print_help()
+                print_help(io)
 
             case "ADD":
                 add_entries(io, app)
