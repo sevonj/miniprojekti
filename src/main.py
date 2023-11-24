@@ -106,7 +106,7 @@ def del_entries(io, app: App):
         "Are you sure you want to delete "
         + (
             '*ALL* entries' if reply == 'ALL' else
-            f'entries with row numbers ({"".join(indices_to_remove)})'
+            f'entries with row numbers ({indices_to_remove})'
         )
         + "? [y/N]: "
     ).upper().strip()
