@@ -5,7 +5,7 @@ This module is the front for the app.
 
 """
 from pybtex.database import Entry
-from app_io import AppIO, StubIO
+from app_io import AppIO
 from app import App
 
 
@@ -78,4 +78,4 @@ def main(io=None):
 
 
 if __name__ == "__main__":
-    main(StubIO())
+    main(AppIO())
