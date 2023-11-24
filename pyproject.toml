@@ -28,4 +28,4 @@ source = ['src']
 omit = ['src/tests/**']
 
 [tool.pylint.MAIN]
-ignore-docstrings = 'yes'
+disable=''

@@ -8,6 +8,32 @@ from pybtex.database import Entry
 from app import App
 
 
+def print_help():
+    """UI fn: Help"""
+    titlemessage = """M I N I P R O J E K T I
+by Ryhmä4
+All commands are case insensitive. Arguments may not be.
+
+Available commands:"""
+
+    # Dic of commands. Key is the command itself and the value is the description.
+    commands = {
+        "ADD": "Add a new entry to the bibliography",
+        "EXIT": "Exit app",
+        "LIST": "Show all entries",
+    }
+
+    # Force alphabetical order
+    keys = sorted(list(commands.keys()))
+
+    # Figure out how much padding is needed
+    maxkeylen = max(len(key) for key in keys)
+
+    print(titlemessage)
+    for key in keys:
+        print(key.ljust(maxkeylen + 2), "-", commands[key])
+
+
 def get_entries(app: App):
     """UI fn: Print all entries"""
     print(app.get_entries())
@@ -54,11 +80,14 @@ def main():
 
     # App loop
     while True:
-        command = input("Enter command (ADD/LIST/EXIT): ").upper().strip()
+        command = input("Enter command (type HELP for help): ").upper().strip()
 
         match command:
             case "EXIT":
                 break
+
+            case "HELP":
+                print_help()
 
             case "ADD":
                 add_entries(app)
