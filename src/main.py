@@ -69,9 +69,10 @@ def del_entries(io, app: App):
     io.print(
         f"\n{'ID':^3} | {'author':^10} | {'title':^10} | {'journal':^10} | {'year':^10}")
     for idx, (_entry_key, entry) in enumerate(entries.items()):
-        field = entry.fields
+        fields = entry.fields
         io.print(
-            f"{idx:^3} | {field['author']:^10} | {field['title']:^10} | {field['journal']:^10} | {field['year']:^10}"
+            f"{idx:^3} | {fields['author']:^10} | {fields['title']:^10} "
+            + f"| {fields['journal']:^10} | {fields['year']:^10}"
         )
 
     reply = io.input(dedent(
