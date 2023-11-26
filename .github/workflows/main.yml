@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: '**'
   pull_request:
     branches: [main]
 
@@ -26,5 +26,7 @@ jobs:
         run: poetry run coverage xml
       - name: Coverage report to Codecov
         run: bash <(curl -s https://codecov.io/bash)
+      - name: Robot test
+        run: poetry run robot src/tests
       - name: Lint
         run: poetry run pylint src
