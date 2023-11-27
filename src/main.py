@@ -100,7 +100,7 @@ def del_entries(io, app: App):
         return
 
     valid_index_range = range(len(entries))
-    indices_to_remove = []
+    indices_to_remove = set()
 
     # pretty formatting here
     # prolly simply call the listing function once done with the addition of indices
@@ -134,7 +134,7 @@ def del_entries(io, app: App):
                 if idx not in valid_index_range:
                     io.print(f"\n\tERROR: out-of-bounds index: {idx}\n")
                     return
-                indices_to_remove.append(idx)
+                indices_to_remove.add(idx)
 
             except ValueError:
                 io.print(f"\n\tERROR: unrecognized index: {idx_as_str}\n")
@@ -144,7 +144,7 @@ def del_entries(io, app: App):
         "Are you sure you want to delete "
         + (
             '*ALL* entries' if reply == 'ALL' else
-            f'entries with row numbers ({indices_to_remove})'
+            f'entries with row numbers ({list(indices_to_remove)})'
         )
         + "? [y/N]: "
     ).upper().strip()
@@ -153,7 +153,7 @@ def del_entries(io, app: App):
         io.print("deletion of entries cancelled")
         return
 
-    app.del_entries(indices_to_remove)
+    app.del_entries(list(indices_to_remove))
 
 
 def main(io):
