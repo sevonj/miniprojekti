@@ -5,6 +5,7 @@ This module contains the service which the UI code can call.
 It should be kept UI-independent; No UI code here.
 
 """
+from uuid import uuid4
 from pybtex.database import BibliographyData, Entry
 from tabulate import tabulate
 
@@ -43,8 +44,29 @@ class App:
         params:
             entry: this will be added
         """
-        key = str(len(self._bib_data.entries))
+        key = str(uuid4())
         self._bib_data.add_entry(key, entry)
+
+    def del_entries(self, entry_indices: list[int]):
+        """Deletes select entries, or all.
+
+        Args:
+            entry_indices (list): the indices of stringkeys of entries to delete.
+                                  An empty list defaults to deleting all entries.
+        """
+
+        # getting ALL keys first, avoiding "mutation during iteration"
+        keys = list(self._bib_data.entries)
+
+        # try/catch removed, entry_indices are sanitized in main.py
+        # deleting specific entries from the `entries` arg
+        if len(entry_indices) > 0:
+            for idx in entry_indices:
+                del self._bib_data.entries[keys[idx]]
+            return
+
+        for key in keys:
+            del self._bib_data.entries[key]
 
     def tabulate_entries(self, entries):
         """Create a table of bibliography entries using the tabulate library
@@ -60,11 +82,13 @@ class App:
                 str(person) for person in entry.persons.get("author", [])
             )
             title = entry.fields.get("title", "N/A")
-            journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
+            journal = entry.fields.get(
+                "journal", entry.fields.get("publisher", "N/A"))
             year = entry.fields.get("year", "N/A")
 
             table_data.append([key, authors, title, journal, year])
 
         return tabulate(
-            table_data, headers=["Citekey", "Author", "Title", "Journal", "Year"]
+            table_data, headers=["Citekey",
+                                 "Author", "Title", "Journal", "Year"]
         )
