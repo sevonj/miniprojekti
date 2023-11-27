@@ -85,6 +85,13 @@ def add_entries(io, app: App):
     io.print("Entry successfully saved to the database.")
 
 
+def search_entries(io, app: App):
+    """UI fn: Search for an entry"""
+    search = io.input("Search: Enter title of the citation: ")
+
+    io.print(app.find_entries_by_title(search))
+
+
 def main(io):
     """Main front"""
 
@@ -107,6 +114,9 @@ def main(io):
 
             case "LIST":
                 get_entries(io, app)
+
+            case "SEARCH":
+                search_entries(io, app)
 
             case _:
                 io.print(f"Unrecognized command: '{command}'")
