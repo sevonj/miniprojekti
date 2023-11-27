@@ -6,6 +6,7 @@ It should be kept UI-independent; No UI code here.
 
 """
 from pybtex.database import BibliographyData, Entry
+from tabulate import tabulate
 
 
 class App:
@@ -44,3 +45,26 @@ class App:
         """
         key = str(len(self._bib_data.entries))
         self._bib_data.add_entry(key, entry)
+
+    def tabulate_entries(self, entries):
+        """Create a table of bibliography entries using the tabulate library
+
+        Args:
+            entries: A list of pybtex Entry objects
+        Returns:
+            A string containing a table of bibliography entries
+        """
+        table_data = []
+        for key, entry in entries.items():
+            authors = " and ".join(
+                str(person) for person in entry.persons.get("author", [])
+            )
+            title = entry.fields.get("title", "N/A")
+            journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
+            year = entry.fields.get("year", "N/A")
+
+            table_data.append([key, authors, title, journal, year])
+
+        return tabulate(
+            table_data, headers=["Citekey", "Author", "Title", "Journal", "Year"]
+        )

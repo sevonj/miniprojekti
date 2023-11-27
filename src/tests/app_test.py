@@ -7,7 +7,7 @@ This module contains unit tests for the App class.
 # pylint: disable=protected-access missing-class-docstring missing-function-docstring
 
 import unittest
-from pybtex.database import BibliographyData, Entry
+from pybtex.database import BibliographyData, Entry, Person
 from app import App
 
 
@@ -24,8 +24,8 @@ class TestApp(unittest.TestCase):
     def test_add_entry(self):
         entry = Entry(
             "article",
+            persons={"author": [Person("Author")]},
             fields={
-                "author": "Author",
                 "title": "Title",
                 "journal": "Journal",
                 "year": "Year",
@@ -50,8 +50,8 @@ class TestApp(unittest.TestCase):
     def test_get_entries(self):
         entry = Entry(
             "article",
+            persons={"author": [Person("Author")]},
             fields={
-                "author": "Author",
                 "title": "Title",
                 "journal": "Journal",
                 "year": "Year",
