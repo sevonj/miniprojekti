@@ -15,6 +15,23 @@ class TestApp(unittest.TestCase):
     def setUp(self):
         self.app = App()
         self.app.create_bib()
+        self.entries = [
+            Entry(
+                "article",
+                persons={"author": [Person("Author1")]},
+                fields={"title": "Title1"},
+            ),
+            Entry(
+                "article",
+                persons={"author": [Person("Author2")]},
+                fields={"title": "Title2"},
+            ),
+            Entry(
+                "article",
+                persons={"author": [Person("Author3")]},
+                fields={"title": "Title3"},
+            ),
+        ]
 
     def test_create_bib(self):
         self.app._bib_data = None
@@ -62,10 +79,7 @@ class TestApp(unittest.TestCase):
         )
 
         # no entries in the beginning
-        self.assertTupleEqual(
-            self.app.get_entries(),
-            (None, "No entries found")
-        )
+        self.assertTupleEqual(self.app.get_entries(), (None, "No entries found"))
 
         self.app.add_entry(entry)
 
@@ -76,20 +90,15 @@ class TestApp(unittest.TestCase):
         )
 
     def test_delete_all_entries_works(self):
-
         # populating 1 entry via an earlier test
         self.test_add_entry()
 
         self.app.del_entries([])
 
         # entries should be empty
-        self.assertTupleEqual(
-            self.app.get_entries(),
-            (None, "No entries found")
-        )
+        self.assertTupleEqual(self.app.get_entries(), (None, "No entries found"))
 
     def test_delete_specific_entries_works(self):
-
         # populating 1 entry via an earlier test
         self.test_add_entry()
 
@@ -137,7 +146,29 @@ class TestApp(unittest.TestCase):
         self.app.del_entries([0])
 
         # entries should be empty
-        self.assertTupleEqual(
-            self.app.get_entries(),
-            (None, "No entries found")
+        self.assertTupleEqual(self.app.get_entries(), (None, "No entries found"))
+
+    def test_search_entries(self):
+        for entry in self.entries:
+            self.app.add_entry(entry)
+
+        # Save keys for later use as they are uuid4
+        keys = list(self.app._bib_data.entries.keys())
+
+        # search for "Title1"
+        filtered_entries = self.app.find_entries_by_title("Title1")
+        self.assertEqual(len(filtered_entries), 1)
+        self.assertEqual(
+            filtered_entries[keys[0]].persons["author"][0].last_names[0], "Author1"
         )
+
+        # search for "Title2"
+        filtered_entries = self.app.find_entries_by_title("Title2")
+        self.assertEqual(len(filtered_entries), 1)
+        self.assertEqual(
+            filtered_entries[keys[1]].persons["author"][0].last_names[0], "Author2"
+        )
+
+        # search for "title"
+        filtered_entries = self.app.find_entries_by_title("title")
+        self.assertEqual(len(filtered_entries), 3)
