@@ -88,8 +88,8 @@ def add_entries(io, app: App):
 def search_entries(io, app: App):
     """UI fn: Search for an entry"""
     search = io.input("Search: Enter title of the citation: ")
-
-    io.print(app.find_entries_by_title(search))
+    filtered_entries = app.find_entries_by_title(search)
+    io.print(app.tabulate_entries(filtered_entries))
 
 
 def main(io):

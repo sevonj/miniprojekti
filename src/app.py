@@ -75,30 +75,15 @@ class App:
         Args:
             searched: A string, a part of title of the searched entry
         Returns:
-            A string containing a table of found entries
-            or a string "No search results"
+            A dictionary of pybtex Entry objects
         """
 
-        entries = self.get_entries()[0]
-        found_keys = []
-        found = []
-        for key, entry in entries.items():
-            if searched in entry.fields.get("title", "N/A"):
-                authors = " and ".join(
-                    str(person) for person in entry.persons.get("author", [])
-                )
-                title = entry.fields.get("title", "N/A")
-                journal = entry.fields.get(
-                    "journal", entry.fields.get("publisher", "N/A")
-                )
-                year = entry.fields.get("year", "N/A")
+        filtered_entries = {}
+        for citekey, entry in self.get_entries()[0].items():
+            if (
+                "title" in entry.fields
+                and searched.lower() in entry.fields["title"].lower()
+            ):
+                filtered_entries[citekey] = entry
 
-                found.append([key, authors, title, journal, year])
-                found_keys.append([key])
-
-        if len(found) > 0:
-            return tabulate(
-                found, headers=["Citekey", "Author", "Title", "Journal", "Year"]
-            )
-        else:
-            return "No search results"
+        return filtered_entries
