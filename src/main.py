@@ -108,8 +108,10 @@ def del_entries(io, app: App):
         f"\n{'ID':^3} | {'author':^10} | {'title':^10} | {'journal':^10} | {'year':^10}")
     for idx, (_entry_key, entry) in enumerate(entries.items()):
         fields = entry.fields
+        person = entry.persons
+        author = ','.join([str(x) for x in person['author']])
         io.print(
-            f"{idx:^3} | {fields['author']:^10} | {fields['title']:^10} "
+            f"{idx:^3} | {author:^10} | {fields['title']:^10} "
             + f"| {fields['journal']:^10} | {fields['year']:^10}"
         )
 
