@@ -6,14 +6,51 @@ This module is the front for the app.
 """
 from textwrap import dedent
 import re
-from pybtex.database import Entry
+from pybtex.database import Entry, Person
 from app_io import AppIO
 from app import App
 
 
+def print_help(io):
+    """UI fn: Help"""
+    msg = """M I N I P R O J E K T I
+by Ryhmä4
+
+Available commands (case-insensitive):
+"""
+
+    # Dic of commands. Key is the command itself and the value is the description.
+    commands = {
+        "ADD": "Add a new entry to the bibliography",
+        "EXIT": "Exit",
+        "HELP": "Display this help message",
+        "LIST": "Display all entries",
+    }
+
+    # Force alphabetical order
+    keys = sorted(list(commands.keys()))
+
+    # Figure out how much padding is needed
+    maxkeylen = max(len(key) for key in keys)
+
+    for key in keys:
+        msg += key.ljust(maxkeylen + 2) + " - " + commands[key] + "\n"
+
+    io.print(msg)
+
+
 def get_entries(io, app: App):
     """UI fn: Print all entries"""
-    io.print(app.get_entries())
+    # Check if there are any entries and print infomessage is there are none
+    if app.get_entries()[0] is None:
+        io.print(app.get_entries()[1])
+        return
+
+    # Get entries and print tabulated form
+    io.print(app.tabulate_entries(app.get_entries()[0]))
+
+    # Print infomessage when successfully retrieved entries
+    io.print(app.get_entries()[1])
 
 
 def add_entries(io, app: App):
@@ -34,8 +71,8 @@ def add_entries(io, app: App):
     # Create an Entry object representing the article citation
     entry = Entry(
         "article",
+        persons={"author": [Person(name) for name in author.split(" and ")]},
         fields={
-            "author": author,
             "title": title,
             "journal": journal,
             "year": year,
@@ -118,7 +155,7 @@ def del_entries(io, app: App):
     app.del_entries(indices_to_remove)
 
 
-def main(io=None):
+def main(io):
     """Main front"""
 
     app = App()
@@ -127,12 +164,14 @@ def main(io=None):
     # App loop
     while True:
         command = io.input(
-            "Enter command (ADD/LIST/DELETE/EXIT): "
-        ).upper().strip()
+            "Enter command (type HELP for help):\n> ").upper().strip()
 
         match command:
             case "EXIT":
                 break
+
+            case "HELP":
+                print_help(io)
 
             case "ADD":
                 add_entries(io, app)
