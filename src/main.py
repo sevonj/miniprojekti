@@ -22,6 +22,7 @@ Available commands (case-insensitive):
     # Dic of commands. Key is the command itself and the value is the description.
     commands = {
         "ADD": "Add a new entry to the bibliography",
+        "DELETE": "Delete one or more entries",
         "EXIT": "Exit",
         "HELP": "Display this help message",
         "LIST": "Display all entries",
