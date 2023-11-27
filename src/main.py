@@ -4,7 +4,7 @@ main.py
 This module is the front for the app.
 
 """
-from pybtex.database import Entry
+from pybtex.database import Entry, Person
 from app_io import AppIO
 from app import App
 
@@ -39,7 +39,16 @@ Available commands (case-insensitive):
 
 def get_entries(io, app: App):
     """UI fn: Print all entries"""
-    io.print(app.get_entries())
+    # Check if there are any entries and print infomessage is there are none
+    if app.get_entries()[0] is None:
+        io.print(app.get_entries()[1])
+        return
+
+    # Get entries and print tabulated form
+    io.print(app.tabulate_entries(app.get_entries()[0]))
+
+    # Print infomessage when successfully retrieved entries
+    io.print(app.get_entries()[1])
 
 
 def add_entries(io, app: App):
@@ -60,8 +69,8 @@ def add_entries(io, app: App):
     # Create an Entry object representing the article citation
     entry = Entry(
         "article",
+        persons={"author": [Person(name) for name in author.split(" and ")]},
         fields={
-            "author": author,
             "title": title,
             "journal": journal,
             "year": year,
