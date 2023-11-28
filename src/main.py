@@ -26,6 +26,7 @@ Available commands (case-insensitive):
         "EXIT": "Exit",
         "HELP": "Display this help message",
         "LIST": "Display all entries",
+        "SEARCH": "Search for an entry by title",
     }
 
     # Force alphabetical order
@@ -88,6 +89,13 @@ def add_entries(io, app: App):
     io.print("Entry successfully saved to the database.")
 
 
+def search_entries(io, app: App):
+    """UI fn: Search for an entry"""
+    search = io.input("Search: Enter title of the citation: ")
+    filtered_entries = app.find_entries_by_title(search)
+    io.print(app.tabulate_entries(filtered_entries))
+
+
 re_idx = re.compile(r"\S+")
 
 
@@ -105,24 +113,31 @@ def del_entries(io, app: App):
     # pretty formatting here
     # prolly simply call the listing function once done with the addition of indices
     io.print(
-        f"\n{'ID':^3} | {'author':^10} | {'title':^10} | {'journal':^10} | {'year':^10}")
+        f"\n{'ID':^3} | {'author':^10} | {'title':^10} | {'journal':^10} | {'year':^10}"
+    )
     for idx, (_entry_key, entry) in enumerate(entries.items()):
         fields = entry.fields
         person = entry.persons
-        author = ','.join([str(x) for x in person['author']])
+        author = ",".join([str(x) for x in person["author"]])
         io.print(
             f"{idx:^3} | {author:^10} | {fields['title']:^10} "
             + f"| {fields['journal']:^10} | {fields['year']:^10}"
         )
 
-    reply = io.input(dedent(
-        """
+    reply = (
+        io.input(
+            dedent(
+                """
         Which entries do you want to remove? Type either:
         - indeces separated by whitespace, e.g. '0 1 5'
         - or the word 'ALL' to remove all entries:
 
         [none]: """
-    )).upper().strip()
+            )
+        )
+        .upper()
+        .strip()
+    )
 
     # not deleting anything
     if reply == "":
@@ -142,14 +157,19 @@ def del_entries(io, app: App):
                 io.print(f"\n\tERROR: unrecognized index: {idx_as_str}\n")
                 return
 
-    confirm = io.input(
-        "Are you sure you want to delete "
-        + (
-            '*ALL* entries' if reply == 'ALL' else
-            f'entries with row numbers ({list(indices_to_remove)})'
+    confirm = (
+        io.input(
+            "Are you sure you want to delete "
+            + (
+                "*ALL* entries"
+                if reply == "ALL"
+                else f"entries with row numbers ({list(indices_to_remove)})"
+            )
+            + "? [y/N]: "
         )
-        + "? [y/N]: "
-    ).upper().strip()
+        .upper()
+        .strip()
+    )
 
     if len(confirm) == 0 or confirm[0] != "Y":
         io.print("deletion of entries cancelled")
@@ -166,8 +186,7 @@ def main(io):
 
     # App loop
     while True:
-        command = io.input(
-            "Enter command (type HELP for help):\n> ").upper().strip()
+        command = io.input("Enter command (type HELP for help):\n> ").upper().strip()
 
         match command:
             case "EXIT":
@@ -184,6 +203,9 @@ def main(io):
 
             case "LIST":
                 get_entries(io, app)
+
+            case "SEARCH":
+                search_entries(io, app)
 
             case _:
                 io.print(f"Unrecognized command: '{command}'")
