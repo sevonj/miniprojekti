@@ -26,6 +26,7 @@ Available commands (case-insensitive):
         "EXIT": "Exit",
         "HELP": "Display this help message",
         "LIST": "Display all entries",
+        "SEARCH": "Search for an entry by title",
     }
 
     # Force alphabetical order
