@@ -21,13 +21,6 @@ class AppLibrary:
 
         if not value in output:
             raise AssertionError(f'"{value}" is not {output}')
-    
-    def output_should_not_contain(self, value: str):
-        """Checks the oldest unread output"""
-        output = self._io.pop_output()
-
-        if value == output:
-            raise AssertionError(f'"{value}" is {output}')
 
     def skip_output(self):
         """

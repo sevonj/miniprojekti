@@ -104,7 +104,7 @@ User Can Delete One Entry
     Skip Output
     Skip Output
     Skip Output
-    Output Should Not Contain    No entries found
+    Output Should Contain    Testaaja, Teppo
 
     
 
