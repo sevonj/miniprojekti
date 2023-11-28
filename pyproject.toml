@@ -27,7 +27,12 @@ filterwarnings = 'ignore::DeprecationWarning:pybtex.*:'
 
 [tool.coverage.run]
 source = ['src']
-omit = ['src/tests/**']
+omit = [
+    'src/tests/**',         # We don't unit test our unit tests.
+    'src/main.py',          # We don't unit test UI code.
+    'src/app_io.py',        # We don't unit test IO wrappers.
+    'src/AppLibrary.py',    # We don't unit test this **** either.
+    ]
 
 [tool.pylint.MAIN]
 ignore-docstrings = 'yes'
