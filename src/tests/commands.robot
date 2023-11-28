@@ -16,14 +16,35 @@ Help Command Can Be Executed
 
 Add Command Can Be Executed
     Add Input  add
-    Input New Entry    Teppo Testaaja    Test Article    Journal of Articles    2023    N/A    N/A    N/A
+    Add New Entry
     Add Input  exit
     Run Application
     Output Should Contain  Enter article citation details
 
+List Command Can Be Executed
+    Add Input  add
+    Add New Entry
+    Add Input  list
+    Add Input  exit
+    Run Application
+    Output Should Contain  Enter article citation details
+    Output Should Contain  Entry successfully saved to the database
+    Output Should Contain  Testaaja, Teppo
+
+Search Command Can Be Executed
+    Add Input  add
+    Add New Entry
+    Add Input  search
+    Add Input  art
+    Add Input  exit
+    Run Application
+    Skip Output
+    Skip Output
+    Output Should Contain    Testaaja, Teppo
+    
 New Entry Can Be Added
     Add Input  add
-    Input New Entry    Teppo Testaaja    Test Article    Journal of Articles    2023    N/A    N/A    N/A
+    Add New Entry
     Add Input  exit
     Run Application
     Output Should Contain  Enter article citation details
@@ -36,7 +57,7 @@ List Command Return Infomessage If No Entries
     Output Should Contain  No entries found
 
 *** Keywords ***
-Input New Entry
+Input New Entry Details
     [Arguments]    ${author}    ${title}    ${journal}    ${year}    ${volume}    ${number}    ${pages}
     Add Input    ${author}
     Add Input    ${title}
@@ -45,3 +66,7 @@ Input New Entry
     Add Input    ${volume}
     Add Input    ${number}
     Add Input    ${pages}
+
+Add New Entry
+    Input New Entry Details    Teppo Testaaja    Test Article    Journal of Articles    2023    N/A    N/A    N/A
+    

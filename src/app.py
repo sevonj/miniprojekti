@@ -82,15 +82,13 @@ class App:
                 str(person) for person in entry.persons.get("author", [])
             )
             title = entry.fields.get("title", "N/A")
-            journal = entry.fields.get(
-                "journal", entry.fields.get("publisher", "N/A"))
+            journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
             year = entry.fields.get("year", "N/A")
 
             table_data.append([key, authors, title, journal, year])
 
         return tabulate(
-            table_data, headers=["Citekey",
-                                 "Author", "Title", "Journal", "Year"]
+            table_data, headers=["Citekey", "Author", "Title", "Journal", "Year"]
         )
 
     def find_entries_by_title(self, searched):
@@ -103,6 +101,8 @@ class App:
         """
 
         filtered_entries = {}
+        if self.get_entries()[0] is None:
+            return filtered_entries
         for citekey, entry in self.get_entries()[0].items():
             if (
                 "title" in entry.fields
