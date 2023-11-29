@@ -56,6 +56,59 @@ List Command Return Infomessage If No Entries
     Run Application
     Output Should Contain  No entries found
 
+Delete All Clears BiblioGraphy
+    Add Input    Add
+    Add New Entry
+    Add Input    Add
+    Add New Entry
+    Add Input    Add
+    Add New Entry
+    Add Input    delete
+    Add Input    All
+    Add Input    y
+    Add Input    list
+    Add Input    exit
+    Run Application
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Output Should Contain    No entries found
+
+User Can Delete One Entry
+    Add Input    Add
+    Add New Entry
+    Add Input    Add
+    Add New Entry
+    Add Input    Add
+    Add New Entry
+    Add Input    delete
+    Add Input    1
+    Add Input    y
+    Add Input    list
+    Add Input    exit
+    Run Application
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Skip Output
+    Output Should Contain    Testaaja, Teppo
+
+    
+
+
 *** Keywords ***
 Input New Entry Details
     [Arguments]    ${author}    ${title}    ${journal}    ${year}    ${volume}    ${number}    ${pages}
