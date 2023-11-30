@@ -54,6 +54,12 @@ class TestApp(unittest.TestCase):
         self.app._bib_path = test_path
         self.assertEqual(self.app.get_bib_path(), test_path)
 
+    def test_load_from_file(self):
+        pass
+
+    def test_save_to_file(self):
+        pass
+
     def test_create_bib(self):
         self.app._bib_data = None
         self.app.create_bib()
