@@ -6,7 +6,7 @@ It should be kept UI-independent; No UI code here.
 
 """
 from uuid import uuid4
-from pybtex.database import BibliographyData, Entry
+from pybtex.database import BibliographyData, Entry, parse_file
 from tabulate import tabulate
 
 
@@ -17,11 +17,41 @@ class App:
     """
 
     def __init__(self):
-        self._bib_data = None
+        self._bib_data: BibliographyData = None  # Currently loaded bibliography
+        self._bib_path: str = None  # Filepath of currently loaded biblography
+
+    def set_bib_path(self, path: str) -> None:
+        """
+        Store filepath of currently loaded bibgliography
+        None is an acceptable value.
+        """
+        self._bib_path = path
+
+    def get_bib_path(self) -> str | None:
+        """
+        Get filepath of currently loaded bibgliography
+        Return value may be None
+        """
+        return self._bib_path
 
     def create_bib(self):
         """Load an empty bibliography"""
         self._bib_data = BibliographyData()
+
+    def load_from_file(self, path: str) -> None:
+        """
+        Warning: Overwrites loaded bibliography without asking.
+        params: Filepath to load
+        """
+        self._bib_path = path
+        self._bib_data = parse_file(path, "bibtex")
+
+    def save_to_file(self, path: str) -> None:
+        """
+        Warning: Overwrites file without asking.
+        params: Filepath to save
+        """
+        self._bib_data.to_file(path)
 
     def get_entries(self):
         """Get the entries from the bibliography
