@@ -28,6 +28,8 @@ Available commands (case-insensitive):
         "HELP": "Display this help message",
         "LIST": "Display all entries",
         "SEARCH": "Search for an entry by title",
+        "EXPORT": "Export entries to a .bib-file. Overwrites data",
+        "IMPORT": "Imports entries from default .bib-file",
     }
 
     # Force alphabetical order
@@ -180,12 +182,16 @@ def del_entries(io, app: App):
 
 
 def export_entries(io, app: App):
+    """UI fn for exporting entries to a default .bib-file"""
+
     path = realpath("./bib_export.bib")
     app.save_to_file(path)
     io.print(f"Exported to {path}")
 
 
 def import_entries(io, app: App):
+    """UI fn for importing entries from a default .bib-file"""
+
     path = realpath("./bib_export.bib")
     app.load_from_file(path)
     io.print(f"Imported from {path}")
