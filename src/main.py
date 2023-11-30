@@ -185,6 +185,12 @@ def export_entries(io, app: App):
     io.print(f"Exported to {path}")
 
 
+def import_entries(io, app: App):
+    path = realpath("./bib_export.bib")
+    app.load_from_file(path)
+    io.print(f"Imported from {path}")
+
+
 def main(io):
     """Main front"""
 
@@ -216,6 +222,9 @@ def main(io):
 
             case "EXPORT":
                 export_entries(io, app)
+
+            case "IMPORT":
+                import_entries(io, app)
 
             case _:
                 io.print(f"Unrecognized command: '{command}'")
