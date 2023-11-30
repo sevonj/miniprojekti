@@ -9,6 +9,7 @@ import re
 from pybtex.database import Entry, Person
 from app_io import AppIO
 from app import App
+from os.path import realpath
 
 
 def print_help(io):
@@ -178,6 +179,12 @@ def del_entries(io, app: App):
     app.del_entries(list(indices_to_remove))
 
 
+def export_entries(io, app: App):
+    path = realpath("./bib_export.bib")
+    app.save_to_file(path)
+    io.print(f"Exported to {path}")
+
+
 def main(io):
     """Main front"""
 
@@ -206,6 +213,9 @@ def main(io):
 
             case "SEARCH":
                 search_entries(io, app)
+
+            case "EXPORT":
+                export_entries(io, app)
 
             case _:
                 io.print(f"Unrecognized command: '{command}'")
