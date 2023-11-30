@@ -33,6 +33,27 @@ class TestApp(unittest.TestCase):
             ),
         ]
 
+    def test_set_bib_path(self):
+        # Set str
+        test_path = "this/is/a/test/path"
+        self.app.set_bib_path(test_path)
+        self.assertEqual(self.app._bib_path, test_path)
+
+        # Set None
+        test_path = None
+        self.app.set_bib_path(test_path)
+        self.assertEqual(self.app._bib_path, test_path)
+
+    def test_get_bib_path(self):
+        # Get str
+        test_path = "this/is/a/test/path"
+        self.app._bib_path = test_path
+        self.assertEqual(self.app.get_bib_path(), test_path)
+
+        # Get None
+        self.app._bib_path = test_path
+        self.assertEqual(self.app.get_bib_path(), test_path)
+
     def test_create_bib(self):
         self.app._bib_data = None
         self.app.create_bib()
