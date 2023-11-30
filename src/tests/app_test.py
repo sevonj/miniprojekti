@@ -39,6 +39,11 @@ class TestApp(unittest.TestCase):
     def setUp(self):
         self.app = App()
         self.app.create_bib()
+
+        # Temp dir
+        if not os.path.exists(TEMP_FILE_PATH):
+            os.makedirs(TEMP_FILE_PATH)
+
         self.entries = [
             Entry(
                 "article",
