@@ -39,7 +39,10 @@ class StubIO:
         # self._outputs.append(output_text)
 
         if len(self._inputs) == 0:
-            return None
+            # pylint: disable=broad-exception-raised
+            raise Exception(
+                "The app asked for more inputs, but there are none!\nRememer to EXIT the app!"
+            )
 
         return self._inputs.pop(0)
 
@@ -52,6 +55,7 @@ class StubIO:
         """This allows test script to get outputs from the queue"""
 
         if len(self._outputs) == 0:
-            return None
+            # pylint: disable=broad-exception-raised
+            raise Exception("Your test asked for an output, but there are none left!")
 
         return self._outputs.pop(0)
