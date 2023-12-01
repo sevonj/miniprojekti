@@ -196,12 +196,19 @@ def export_entries(io, app: App):
 
 
 def import_entries(io, app: App):
-    """UI fn for importing entries from a default .bib-file"""
+    """UI fn for importing entries from a .bib-file"""
 
     path = realpath("./bib_export.bib")
 
-    app.load_from_file(path)
-    io.print(f"Imported from {path}")
+    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    if reply:
+        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+
+    try:
+        app.load_from_file(path)
+        io.print(f"Imported from {path}")
+    except Exception:
+        io.print("Importing file failed. Try another file name")
 
 
 def main(io):
