@@ -6,10 +6,10 @@ This module is the front for the app.
 """
 from textwrap import dedent
 import re
-from pybtex.database import Entry, Person
+from os.path import realpath
+from pybtex.database import Entry, Person, PybtexError
 from app_io import AppIO
 from app import App
-from os.path import realpath
 
 
 def print_help(io):
@@ -184,15 +184,17 @@ def del_entries(io, app: App):
 def export_entries(io, app: App):
     """UI fn for exporting entries to a .bib-file"""
     path = realpath("./bib_export.bib")
-    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    reply = io.input(
+        "Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+        path = realpath(
+            f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.save_to_file(path)
         io.print(f"Exported to {path}")
-    except Exception:
-        io.print("Exporting file failed. Try another file name")
+    except PybtexError:
+        io.print("\n\tExporting file failed. Try another file name\n")
 
 
 def import_entries(io, app: App):
@@ -200,15 +202,17 @@ def import_entries(io, app: App):
 
     path = realpath("./bib_export.bib")
 
-    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    reply = io.input(
+        "Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+        path = realpath(
+            f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.load_from_file(path)
         io.print(f"Imported from {path}")
-    except Exception:
-        io.print("Importing file failed. Try another file name")
+    except PybtexError:
+        io.print("\n\tImporting file failed. Try another file name\n")
 
 
 def main(io):
@@ -219,7 +223,8 @@ def main(io):
 
     # App loop
     while True:
-        command = io.input("Enter command (type HELP for help):\n> ").upper().strip()
+        command = io.input(
+            "Enter command (type HELP for help):\n> ").upper().strip()
 
         match command:
             case "EXIT":
