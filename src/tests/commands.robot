@@ -1,5 +1,6 @@
 *** Settings ***
 Library  ../AppLibrary.py
+Resource    resource.robot
 *** Variables ***
 
 *** Test Cases ***
@@ -106,47 +107,3 @@ User Can Delete One Entry
     Skip Output
     Output Should Contain    Testaaja, Teppo
 
-User Can Export Added Entry
-    Add Input  Add
-    Add New Entry
-    Add Input  EXPORT
-    Add Input  exit
-    Run Application
-    Skip Output
-    Skip Output
-    Output Should Contain    Exported to
-
-User Can Import Exported Data After Successful In-App Deletion
-    Add Input  Add
-    Add New Entry
-    Add Input  Export
-    Add Input  Delete
-    Add Input  All
-    Add Input  y
-    Add Input  Import
-    Add Input  List
-    Add Input  Exit
-    Run Application
-    Skip Output
-    Skip Output
-    Skip Output
-    Skip Output
-    Skip Output
-    Output Should Contain    Imported from
-    Output Should Contain    Testaaja, Teppo
-
-
-*** Keywords ***
-Input New Entry Details
-    [Arguments]    ${author}    ${title}    ${journal}    ${year}    ${volume}    ${number}    ${pages}
-    Add Input    ${author}
-    Add Input    ${title}
-    Add Input    ${journal}
-    Add Input    ${year}
-    Add Input    ${volume}
-    Add Input    ${number}
-    Add Input    ${pages}
-
-Add New Entry
-    Input New Entry Details    Teppo Testaaja    Test Article    Journal of Articles    2023    N/A    N/A    N/A
-    
