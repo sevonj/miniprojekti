@@ -6,7 +6,8 @@ This module is the front for the app.
 """
 from textwrap import dedent
 import re
-from pybtex.database import Entry, Person
+from os.path import realpath
+from pybtex.database import Entry, Person, PybtexError
 from app_io import AppIO
 from app import App
 
@@ -27,6 +28,8 @@ Available commands (case-insensitive):
         "HELP": "Display this help message",
         "LIST": "Display all entries",
         "SEARCH": "Search for an entry by title",
+        "EXPORT": "Export entries to a .bib-file. Overwrites data",
+        "IMPORT": "Imports entries from default .bib-file",
     }
 
     # Force alphabetical order
@@ -178,6 +181,40 @@ def del_entries(io, app: App):
     app.del_entries(list(indices_to_remove))
 
 
+def export_entries(io, app: App):
+    """UI fn for exporting entries to a .bib-file"""
+    path = realpath("./bib_export.bib")
+    reply = io.input(
+        "Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    if reply:
+        path = realpath(
+            f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+
+    try:
+        app.save_to_file(path)
+        io.print(f"Exported to {path}")
+    except PybtexError:
+        io.print("\n\tExporting file failed. Try another file name\n")
+
+
+def import_entries(io, app: App):
+    """UI fn for importing entries from a .bib-file"""
+
+    path = realpath("./bib_export.bib")
+
+    reply = io.input(
+        "Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    if reply:
+        path = realpath(
+            f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+
+    try:
+        app.load_from_file(path)
+        io.print(f"Imported from {path}")
+    except PybtexError:
+        io.print("\n\tImporting file failed. Try another file name\n")
+
+
 def main(io):
     """Main front"""
 
@@ -186,7 +223,8 @@ def main(io):
 
     # App loop
     while True:
-        command = io.input("Enter command (type HELP for help):\n> ").upper().strip()
+        command = io.input(
+            "Enter command (type HELP for help):\n> ").upper().strip()
 
         match command:
             case "EXIT":
@@ -206,6 +244,12 @@ def main(io):
 
             case "SEARCH":
                 search_entries(io, app)
+
+            case "EXPORT":
+                export_entries(io, app)
+
+            case "IMPORT":
+                import_entries(io, app)
 
             case _:
                 io.print(f"Unrecognized command: '{command}'")
