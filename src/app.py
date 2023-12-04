@@ -55,6 +55,7 @@ class App:
                     return "Title Already Exists For Another Entry, Try Again"
 
         self._bib_data.add_entry(key, entry)
+        return
 
     def del_entries(self, entry_indices: list[int]):
         """Deletes select entries, or all.

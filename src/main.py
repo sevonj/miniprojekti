@@ -49,7 +49,6 @@ def get_entries(io, app: App):
         return
 
     # Get entries and print tabulated form
-    # io.print(app.get_entries()[0])
     io.print(app.tabulate_entries(app.get_entries()[0]))
 
     # Print infomessage when successfully retrieved entries
@@ -70,7 +69,7 @@ def add_entries(io, app: App):
     if not any([author, title, journal, year, volume, number, pages]):
         io.print("An entry is missing, try again.")
         return
-    
+
     # Create an Entry object representing the article citation
     entry = Entry(
         "article",
