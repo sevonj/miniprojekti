@@ -70,15 +70,7 @@ def add_entries(io, app: App):
     if not any([author, title, journal, year, volume, number, pages]):
         io.print("An entry is missing, try again.")
         return
-
-    entries = app.get_entries()[0]
-
-    if entries:
-        for _citekey, entry in entries.items():
-            if entry.fields["title"].lower() == title.lower():
-                io.print("Title Already Exists For Another Entry, Try Again")
-                return
-
+    
     # Create an Entry object representing the article citation
     entry = Entry(
         "article",

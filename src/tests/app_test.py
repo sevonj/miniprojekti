@@ -172,3 +172,38 @@ class TestApp(unittest.TestCase):
         # search for "title"
         filtered_entries = self.app.find_entries_by_title("title")
         self.assertEqual(len(filtered_entries), 3)
+
+    def test_titles_are_unique(self):
+        entry_1 = Entry(
+            "article",
+            persons={"author": [Person("Author")]},
+            fields={
+                "title": "Not Unique",
+                "journal": "Journal",
+                "year": "Year",
+                "volume": "Volume",
+                "number": "Number",
+                "pages": "Pages",
+            },
+        )
+
+        entry_2 = Entry(
+            "article",
+            persons={"author": [Person("Author")]},
+            fields={
+                "title": "Not Unique",
+                "journal": "Journal",
+                "year": "Year",
+                "volume": "Volume",
+                "number": "Number",
+                "pages": "Pages",
+            },
+        )
+
+        self.app.add_entry(entry_1)
+        self.assertTupleEqual(
+            self.app.get_entries(),
+            (self.app._bib_data.entries, "Successfully retrieved entries"),
+        )
+        self.app.add_entry(entry_2)
+        self.assertEqual(len(self.app._bib_data.entries), 1)

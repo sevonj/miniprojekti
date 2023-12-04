@@ -45,6 +45,15 @@ class App:
             entry: this will be added
         """
         key = str(uuid4())
+        entries = self._bib_data.entries
+        title = entry.fields.get("title")
+
+        if entries:
+            for _citekey, entry in entries.items():
+                if entry.fields["title"].lower() == title.lower():
+                    "Title Already Exists For Another Entry, Try Again"
+                    return
+
         self._bib_data.add_entry(key, entry)
 
     def del_entries(self, entry_indices: list[int]):
