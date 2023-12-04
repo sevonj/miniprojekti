@@ -178,7 +178,7 @@ class TestApp(unittest.TestCase):
             "article",
             persons={"author": [Person("Author")]},
             fields={
-                "title": "Not Unique",
+                "title": "not Unique",
                 "journal": "Journal",
                 "year": "Year",
                 "volume": "Volume",
@@ -191,7 +191,7 @@ class TestApp(unittest.TestCase):
             "article",
             persons={"author": [Person("Author")]},
             fields={
-                "title": "Not Unique",
+                "title": "Not UniQUE",
                 "journal": "Journal",
                 "year": "Year",
                 "volume": "Volume",

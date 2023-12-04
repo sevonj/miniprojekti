@@ -49,10 +49,10 @@ class App:
         title = entry.fields.get("title")
 
         if entries:
-            for _citekey, entry in entries.items():
-                if entry.fields["title"].lower() == title.lower():
-                    "Title Already Exists For Another Entry, Try Again"
-                    return
+            for _citekey, existing_entry in entries.items():
+                existing_title = existing_entry.fields.get("title")
+                if existing_title.lower() == title.lower():
+                    return "Title Already Exists For Another Entry, Try Again"
 
         self._bib_data.add_entry(key, entry)
 
