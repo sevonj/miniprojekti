@@ -14,7 +14,7 @@ Miniprojekti on täällä
 [Definition of Done ja tuntikirjaukset](https://tree.taiga.io/project/sevonj-miniprojekti/wiki/home)
 
 ### Ohjeet
-#### Vaatimusket:
+#### Vaatimukset:
 - Python versio 3.10 tai uudempi
 - Poetry
 
