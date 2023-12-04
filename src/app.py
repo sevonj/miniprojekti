@@ -86,7 +86,7 @@ class App:
             A string containing a table of bibliography entries
         """
         table_data = []
-        for key, entry in entries.items():
+        for idx, (key, entry) in enumerate(entries.items()):
             authors = " and ".join(
                 str(person) for person in entry.persons.get("author", [])
             )
@@ -94,10 +94,10 @@ class App:
             journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
             year = entry.fields.get("year", "N/A")
 
-            table_data.append([key, authors, title, journal, year])
+            table_data.append([idx, key, authors, title, journal, year])
 
         return tabulate(
-            table_data, headers=["Citekey", "Author", "Title", "Journal", "Year"]
+            table_data, headers=["ID", "Citekey", "Author", "Title", "Journal", "Year"]
         )
 
     def find_entries_by_title(self, searched):
