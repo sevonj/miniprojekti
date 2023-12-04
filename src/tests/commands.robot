@@ -76,9 +76,6 @@ Delete All Clears BiblioGraphy
     Skip Output
     Skip Output
     Skip Output
-    Skip Output
-    Skip Output
-    Skip Output
     Output Should Contain    No entries found
 
 User Can Delete One Entry
@@ -94,9 +91,6 @@ User Can Delete One Entry
     Add Input    list
     Add Input    exit
     Run Application
-    Skip Output
-    Skip Output
-    Skip Output
     Skip Output
     Skip Output
     Skip Output
