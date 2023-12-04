@@ -53,6 +53,7 @@ class App:
                 existing_title = existing_entry.fields.get("title")
                 if existing_title.lower() == title.lower():
                     return "Title Already Exists For Another Entry, Try Again"
+            return
 
         self._bib_data.add_entry(key, entry)
         return
