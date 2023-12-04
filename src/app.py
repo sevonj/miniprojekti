@@ -139,8 +139,7 @@ class App:
         except HTTPError as e:
             if e.code == 404:
                 return "DOI not found."
-            else:
-                return "Service unavailable."
+            return "Service unavailable."
 
     def parse_entry_from_bibtex(self, bibtex_entry):
         """Parse a BibTeX entry
