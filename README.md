@@ -1,6 +1,6 @@
 # miniprojekti
 
-![CI Badge](https://github.com/sevonj/miniprojekti/blob/main/.github/workflows/main.yml?branch=main)
+![CI Badge](https://github.com/sevonj/miniprojekti/.github/workflows/main.yml?branch=main)
 [![codecov](https://codecov.io/gh/sevonj/miniprojekti/graph/badge.svg?token=YENFDFJKT2)](https://codecov.io/gh/sevonj/miniprojekti)
 
 
