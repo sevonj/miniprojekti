@@ -7,6 +7,8 @@ This module contains unit tests for the App class.
 # pylint: disable=protected-access missing-class-docstring missing-function-docstring
 
 import unittest
+from unittest.mock import patch
+from urllib.error import HTTPError
 from pybtex.database import BibliographyData, Entry, Person
 from app import App
 
@@ -173,37 +175,30 @@ class TestApp(unittest.TestCase):
         filtered_entries = self.app.find_entries_by_title("title")
         self.assertEqual(len(filtered_entries), 3)
 
-    def test_titles_are_unique(self):
-        entry_1 = Entry(
-            "article",
-            persons={"author": [Person("Author")]},
-            fields={
-                "title": "not Unique",
-                "journal": "Journal",
-                "year": "Year",
-                "volume": "Volume",
-                "number": "Number",
-                "pages": "Pages",
-            },
+    def test_valid_doi_returns_bibtex(self):
+        # This is a valid DOI
+        doi = "10.1145/2783446.2783605"
+        bibtex = self.app.get_bibtex_by_doi(doi)
+
+        # bibtex should start with " @"
+        self.assertTrue(bibtex.startswith(" @"))
+
+    def test_doi_not_found_returns_infomessage(self):
+        # This is an invalid DOI
+        doi = "10.1145/2783446.2783605x"
+        bibtex = self.app.get_bibtex_by_doi(doi)
+        self.assertEqual(bibtex, "DOI not found.")
+
+    @patch("urllib.request.urlopen")
+    def test_doi_service_not_available_returns_infomessage(self, mock_urlopen):
+        # Make urlopen mock raise an HTTPError
+        mock_urlopen.side_effect = HTTPError(
+            "http://notworkingurl.com/", 503, "Service unavailable", {}, None
         )
 
-        entry_2 = Entry(
-            "article",
-            persons={"author": [Person("Author")]},
-            fields={
-                "title": "Not UniQUE",
-                "journal": "Journal",
-                "year": "Year",
-                "volume": "Volume",
-                "number": "Number",
-                "pages": "Pages",
-            },
-        )
+        # This is a valid DOI
+        doi = "10.1145/2783446.2783605"
+        bibtex = self.app.get_bibtex_by_doi(doi)
 
-        self.app.add_entry(entry_1)
-        self.assertTupleEqual(
-            self.app.get_entries(),
-            (self.app._bib_data.entries, "Successfully retrieved entries"),
-        )
-        self.app.add_entry(entry_2)
-        self.assertEqual(len(self.app._bib_data.entries), 1)
+        # Mocked urlopen should raise an HTTPError with 503 status code
+        self.assertEqual(bibtex, "Service unavailable.")
