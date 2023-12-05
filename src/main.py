@@ -121,7 +121,7 @@ def search_entries(io, app: App):
 
 
 def names_to_str(names: []):
-    return ", ".join(str(person) for person in entry.persons.get("author", []))
+    return ", ".join(str(person) for person in names)
 
 
 re_idx = re.compile(r"\S+")
