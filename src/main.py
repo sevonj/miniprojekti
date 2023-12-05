@@ -9,6 +9,7 @@ import re
 from pybtex.database import Entry, Person
 from app_io import AppIO
 from app import App
+from tabulate import tabulate
 
 
 def print_help(io):
@@ -43,16 +44,27 @@ Available commands (case-insensitive):
 
 def get_entries(io, app: App):
     """UI fn: Print all entries"""
-    # Check if there are any entries and print infomessage is there are none
+
+    # Print infomessage
+    io.print("\n", app.get_entries()[1])
+
+    # No entries, return
     if app.get_entries()[0] is None:
-        io.print(app.get_entries()[1])
         return
 
-    # Get entries and print tabulated form
-    io.print(app.tabulate_entries(app.get_entries()[0]))
+    entries = app.get_entries()[0]
+    table_data = []
+    for i, (key, entry) in enumerate(entries.items()):
+        authors = ", ".join(str(person) for person in entry.persons.get("author", []))
+        title = entry.fields.get("title", "N/A")
+        journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
+        year = entry.fields.get("year", "N/A")
+        table_data.append([i, key, authors, title, journal, year])
 
-    # Print infomessage when successfully retrieved entries
-    io.print(app.get_entries()[1])
+    io.print(
+        tabulate(table_data, headers=["Citekey", "Author", "Title", "Journal", "Year"]),
+        "\n",
+    )
 
 
 def add_entries(io, app: App):

@@ -29,6 +29,7 @@ List Command Can Be Executed
     Run Application
     Output Should Contain  Enter article citation details
     Output Should Contain  Entry successfully saved to the database
+    Skip Output
     Output Should Contain  Testaaja, Teppo
 
 Search Command Can Be Executed
@@ -91,6 +92,7 @@ User Can Delete One Entry
     Add Input    list
     Add Input    exit
     Run Application
+    Skip Output
     Skip Output
     Skip Output
     Skip Output
