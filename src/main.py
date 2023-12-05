@@ -28,8 +28,8 @@ Available commands (case-insensitive):
         "HELP": "Display this help message",
         "LIST": "Display all entries",
         "SEARCH": "Search for an entry by title",
-        "EXPORT": "Export entries to a .bib-file. Overwrites data",
-        "IMPORT": "Imports entries from default .bib-file",
+        "SAVE": "Save entries to a .bib-file. Overwrites data",
+        "LOAD": "Loads entries from a .bib-file",
     }
 
     # Force alphabetical order
@@ -181,38 +181,34 @@ def del_entries(io, app: App):
     app.del_entries(list(indices_to_remove))
 
 
-def export_entries(io, app: App):
-    """UI fn for exporting entries to a .bib-file"""
+def save_entries(io, app: App):
+    """UI fn for saving entries to a .bib-file"""
     path = realpath("./bib_export.bib")
-    reply = io.input(
-        "Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(
-            f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.save_to_file(path)
-        io.print(f"Exported to {path}")
+        io.print(f"Saved to {path}")
     except PybtexError:
-        io.print("\n\tExporting file failed. Try another file name\n")
+        io.print("\n\tSaving file failed. Try another file name\n")
 
 
-def import_entries(io, app: App):
-    """UI fn for importing entries from a .bib-file"""
+def load_entries(io, app: App):
+    """UI fn for loading entries from a .bib-file"""
 
     path = realpath("./bib_export.bib")
 
-    reply = io.input(
-        "Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(
-            f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.load_from_file(path)
-        io.print(f"Imported from {path}")
+        io.print(f"Loaded from {path}")
     except PybtexError:
-        io.print("\n\tImporting file failed. Try another file name\n")
+        io.print("\n\tLoading file failed. Try another file name\n")
 
 
 def main(io):
@@ -223,8 +219,7 @@ def main(io):
 
     # App loop
     while True:
-        command = io.input(
-            "Enter command (type HELP for help):\n> ").upper().strip()
+        command = io.input("Enter command (type HELP for help):\n> ").upper().strip()
 
         match command:
             case "EXIT":
@@ -245,11 +240,11 @@ def main(io):
             case "SEARCH":
                 search_entries(io, app)
 
-            case "EXPORT":
-                export_entries(io, app)
+            case "SAVE":
+                save_entries(io, app)
 
-            case "IMPORT":
-                import_entries(io, app)
+            case "LOAD":
+                load_entries(io, app)
 
             case _:
                 io.print(f"Unrecognized command: '{command}'")

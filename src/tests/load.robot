@@ -5,16 +5,16 @@ Resource    resource.robot
 
 *** Test Cases ***
 
-User Can Import Exported Data After Successful In-App Deletion
+User Can Load Saved Data After Successful In-App Deletion
     Add Input  Add
     Add New Entry
-    Add Input  Export
-    Add Input    test-export-import.bib
+    Add Input  Save
+    Add Input    test-export-load.bib
     Add Input  Delete
     Add Input  All
     Add Input  y
-    Add Input  Import
-    Add Input    test-export-import.bib
+    Add Input  Load
+    Add Input    test-export-Load.bib
     Add Input  List
     Add Input  Exit
     Run Application
@@ -23,19 +23,19 @@ User Can Import Exported Data After Successful In-App Deletion
     Skip Output
     Skip Output
     Skip Output
-    Output Should Contain    Imported from
+    Output Should Contain    Loaded from
     Output Should Contain    Testaaja, Teppo
 
-User Can Import from File Without Any Extension
+User Can Load from File Without Any Extension
     Add Input  Add
     Add New Entry
-    Add Input  Export
-    Add Input    test-export-importbbbbb
+    Add Input  Save
+    Add Input    test-export-Loadbbbbb
     Add Input  Delete
     Add Input  All
     Add Input  y
-    Add Input  Import
-    Add Input    test-export-importbbbbb
+    Add Input  Load
+    Add Input    test-export-Loadbbbbb
     Add Input  List
     Add Input  Exit
     Run Application
@@ -44,15 +44,15 @@ User Can Import from File Without Any Extension
     Skip Output
     Skip Output
     Skip Output
-    Output Should Contain    Imported from
+    Output Should Contain    Loaded from
     Output Should Contain    Testaaja, Teppo
 
 
-User Can Not Import From Non Existent File
-    Add Input  Import
-    Add Input    non-existent-test-export-import.bib
+User Can Not Load From Non Existent File
+    Add Input  Load
+    Add Input    non-existent-test-export-Load.bib
     Add Input  List
     Add Input  Exit
     Run Application
-    Output Should Contain    Importing file failed
+    Output Should Contain    Loading file failed
 
