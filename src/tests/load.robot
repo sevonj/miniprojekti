@@ -14,7 +14,7 @@ User Can Load Saved Data After Successful In-App Deletion
     Add Input  All
     Add Input  y
     Add Input  Load
-    Add Input    test-export-Load.bib
+    Add Input    test-export-load.bib
     Add Input  List
     Add Input  Exit
     Run Application
