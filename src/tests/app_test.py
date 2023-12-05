@@ -8,6 +8,8 @@ This module contains unit tests for the App class.
 
 import unittest
 import os.path
+from unittest.mock import patch
+from urllib.error import HTTPError
 from pybtex.database import BibliographyData, Entry, Person
 from pybtex.utils import OrderedCaseInsensitiveDict
 from app import App
@@ -259,3 +261,31 @@ class TestApp(unittest.TestCase):
         # search for "title"
         filtered_entries = self.app.find_entries_by_title("title")
         self.assertEqual(len(filtered_entries), 3)
+
+    def test_valid_doi_returns_bibtex(self):
+        # This is a valid DOI
+        doi = "10.1145/2783446.2783605"
+        bibtex = self.app.get_bibtex_by_doi(doi)
+
+        # bibtex should start with " @"
+        self.assertTrue(bibtex.startswith(" @"))
+
+    def test_doi_not_found_returns_infomessage(self):
+        # This is an invalid DOI
+        doi = "10.1145/2783446.2783605x"
+        bibtex = self.app.get_bibtex_by_doi(doi)
+        self.assertEqual(bibtex, "DOI not found.")
+
+    @patch("urllib.request.urlopen")
+    def test_doi_service_not_available_returns_infomessage(self, mock_urlopen):
+        # Make urlopen mock raise an HTTPError
+        mock_urlopen.side_effect = HTTPError(
+            "http://notworkingurl.com/", 503, "Service unavailable", {}, None
+        )
+
+        # This is a valid DOI
+        doi = "10.1145/2783446.2783605"
+        bibtex = self.app.get_bibtex_by_doi(doi)
+
+        # Mocked urlopen should raise an HTTPError with 503 status code
+        self.assertEqual(bibtex, "Service unavailable.")

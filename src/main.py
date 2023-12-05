@@ -24,6 +24,7 @@ Available commands (case-insensitive):
     commands = {
         "ADD": "Add a new entry to the bibliography",
         "DELETE": "Delete one or more entries",
+        "DOI": "Search online for an entry by DOI",
         "EXIT": "Exit",
         "HELP": "Display this help message",
         "LIST": "Display all entries",
@@ -113,19 +114,7 @@ def del_entries(io, app: App):
     valid_index_range = range(len(entries))
     indices_to_remove = set()
 
-    # pretty formatting here
-    # prolly simply call the listing function once done with the addition of indices
-    io.print(
-        f"\n{'ID':^3} | {'author':^10} | {'title':^10} | {'journal':^10} | {'year':^10}"
-    )
-    for idx, (_entry_key, entry) in enumerate(entries.items()):
-        fields = entry.fields
-        person = entry.persons
-        author = ",".join([str(x) for x in person["author"]])
-        io.print(
-            f"{idx:^3} | {author:^10} | {fields['title']:^10} "
-            + f"| {fields['journal']:^10} | {fields['year']:^10}"
-        )
+    io.print(app.tabulate_entries(entries))
 
     reply = (
         io.input(
@@ -211,6 +200,30 @@ def load_entries(io, app: App):
         io.print("\n\tLoading file failed. Try another file name\n")
 
 
+def search_doi(io, app: App):
+    """UI fn: Search for an entry"""
+    doi = io.input("Search: Enter DOI of the citation: ")
+    if not doi:
+        io.print("DOI is missing, search cancelled.")
+        return
+    search_result = app.get_bibtex_by_doi(doi)
+    if search_result.startswith(" @"):
+        entry = app.parse_entry_from_bibtex(search_result)
+        temp_dict = {doi: entry}
+        io.print(app.tabulate_entries(temp_dict))
+        confirm_add = io.input(
+            "Entry successfully retrieved. Would you like to add it to bibliography? y/N:"
+        )
+        if confirm_add.upper().strip() == "Y":
+            app.add_entry(entry)
+            io.print("Entry successfully saved to the database.")
+        else:
+            io.print("Entry not added.")
+            return
+    else:
+        io.print(search_result)
+
+
 def main(io):
     """Main front"""
 
@@ -230,6 +243,9 @@ def main(io):
 
             case "ADD":
                 add_entries(io, app)
+
+            case "DOI":
+                search_doi(io, app)
 
             case "DELETE":
                 del_entries(io, app)
