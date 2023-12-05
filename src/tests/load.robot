@@ -22,7 +22,6 @@ User Can Load Saved Data After Successful In-App Deletion
     Skip Output
     Skip Output
     Skip Output
-    Skip Output
     Output Should Contain    Loaded from
     Output Should Contain    Testaaja, Teppo
 
@@ -39,7 +38,6 @@ User Can Load from File Without Any Extension
     Add Input  List
     Add Input  Exit
     Run Application
-    Skip Output
     Skip Output
     Skip Output
     Skip Output
