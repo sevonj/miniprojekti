@@ -6,8 +6,12 @@ It should be kept UI-independent; No UI code here.
 
 """
 from uuid import uuid4
-from pybtex.database import BibliographyData, Entry
+import urllib.request
+from urllib.error import HTTPError
+from pybtex.database import BibliographyData, Entry, parse_string
 from tabulate import tabulate
+
+BASE_DOI_URL = "http://dx.doi.org/"
 
 
 class App:
@@ -111,3 +115,39 @@ class App:
                 filtered_entries[citekey] = entry
 
         return filtered_entries
+
+    def get_bibtex_by_doi(self, doi, doi_url=BASE_DOI_URL):
+        """Get a BibTeX entry by DOI
+
+        Method code follows the idea by christian from: https://scipython.com/blog/doi-to-bibtex/
+
+        Args:
+            doi: A DOI string
+        Returns:
+            A BibTeX entry as a string
+        """
+        url = doi_url + doi
+        req = urllib.request.Request(url)
+
+        # Add header for requesting BibTeX format
+        req.add_header("Accept", "application/x-bibtex")
+
+        try:
+            with urllib.request.urlopen(req) as f:
+                bibtex_entry = f.read().decode()
+            return bibtex_entry
+        except HTTPError as e:
+            if e.code == 404:
+                return "DOI not found."
+            return "Service unavailable."
+
+    def parse_entry_from_bibtex(self, bibtex_entry):
+        """Parse a BibTeX entry
+
+        Args:
+            bibtex_entry: A BibTeX entry as a string
+        Returns:
+            A pybtex Entry object
+        """
+        bib_data = parse_string(bibtex_entry, "bibtex")
+        return list(bib_data.entries.values())[0]
