@@ -86,10 +86,9 @@ class App:
             for _citekey, existing_entry in entries.items():
                 existing_title = existing_entry.fields.get("title")
                 if existing_title.lower() == title.lower():
-                    return "Title Already Exists For Another Entry, Try Again"
+                    return  # "Title Already Exists For Another Entry, Try Again"
 
         self._bib_data.add_entry(key, entry)
-        return
 
     def del_entries(self, entry_indices: list[int]):
         """Deletes select entries, or all.
