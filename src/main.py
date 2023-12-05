@@ -7,9 +7,9 @@ This module is the front for the app.
 from textwrap import dedent
 import re
 from pybtex.database import Entry, Person
+from tabulate import tabulate
 from app_io import AppIO
 from app import App
-from tabulate import tabulate
 
 
 def print_help(io):
@@ -120,7 +120,11 @@ def search_entries(io, app: App):
     )
 
 
-def names_to_str(names: []):
+def format_names(names: []) -> str:
+    """
+    Param: Array of names
+    Return: Names formatted into one string
+    """
     return ", ".join(str(person) for person in names)
 
 
