@@ -139,24 +139,24 @@ def del_entries(io, app: App):
         io.print("there is nothing to delete")
         return
 
+    table_data = [
+        {
+            "Idx": i,
+            "Citekey": key,
+            "Author": format_names(entry.persons.get("author", [])),
+            "Title": entry.fields.get("title", "N/A"),
+            "Journal": (
+                entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
+            ),
+            "Year": entry.fields.get("year", "N/A"),
+        }
+        for i, (key, entry) in enumerate(entries.items())
+    ]
+
+    io.print(tabulate(table_data, headers="keys"))
+
     valid_index_range = range(len(entries))
     indices_to_remove = set()
-
-    entries = app.get_entries()[0]
-    table_data = []
-    for i, (key, entry) in enumerate(entries.items()):
-        authors = ", ".join(str(person) for person in entry.persons.get("author", []))
-        title = entry.fields.get("title", "N/A")
-        journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
-        year = entry.fields.get("year", "N/A")
-        table_data.append([i, key, authors, title, journal, year])
-
-    io.print(
-        tabulate(
-            table_data, headers=["Idx", "Citekey", "Author", "Title", "Journal", "Year"]
-        ),
-        "\n",
-    )
 
     reply = (
         io.input(
