@@ -7,7 +7,6 @@ It should be kept UI-independent; No UI code here.
 """
 from uuid import uuid4
 from pybtex.database import BibliographyData, Entry
-from tabulate import tabulate
 
 
 class App:
@@ -67,29 +66,6 @@ class App:
 
         for key in keys:
             del self._bib_data.entries[key]
-
-    def tabulate_entries(self, entries):
-        """Create a table of bibliography entries using the tabulate library
-
-        Args:
-            entries: A list of pybtex Entry objects
-        Returns:
-            A string containing a table of bibliography entries
-        """
-        table_data = []
-        for idx, (key, entry) in enumerate(entries.items()):
-            authors = " and ".join(
-                str(person) for person in entry.persons.get("author", [])
-            )
-            title = entry.fields.get("title", "N/A")
-            journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
-            year = entry.fields.get("year", "N/A")
-
-            table_data.append([idx, key, authors, title, journal, year])
-
-        return tabulate(
-            table_data, headers=["ID", "Citekey", "Author", "Title", "Journal", "Year"]
-        )
 
     def find_entries_by_title(self, searched):
         """Find all entries where searched word is included the title.

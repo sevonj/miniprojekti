@@ -54,12 +54,12 @@ def get_entries(io, app: App):
 
     entries = app.get_entries()[0]
     table_data = []
-    for i, (key, entry) in enumerate(entries.items()):
+    for key, entry in entries.items():
         authors = ", ".join(str(person) for person in entry.persons.get("author", []))
         title = entry.fields.get("title", "N/A")
         journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
         year = entry.fields.get("year", "N/A")
-        table_data.append([i, key, authors, title, journal, year])
+        table_data.append([key, authors, title, journal, year])
 
     io.print(
         tabulate(table_data, headers=["Citekey", "Author", "Title", "Journal", "Year"]),
@@ -104,8 +104,24 @@ def add_entries(io, app: App):
 def search_entries(io, app: App):
     """UI fn: Search for an entry"""
     search = io.input("Search: Enter title of the citation: ")
-    filtered_entries = app.find_entries_by_title(search)
-    io.print(app.tabulate_entries(filtered_entries))
+    entries = app.find_entries_by_title(search)
+
+    table_data = []
+    for key, entry in entries.items():
+        authors = ", ".join(str(person) for person in entry.persons.get("author", []))
+        title = entry.fields.get("title", "N/A")
+        journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
+        year = entry.fields.get("year", "N/A")
+        table_data.append([key, authors, title, journal, year])
+
+    io.print(
+        tabulate(table_data, headers=["Citekey", "Author", "Title", "Journal", "Year"]),
+        "\n",
+    )
+
+
+def names_to_str(names: []):
+    return ", ".join(str(person) for person in entry.persons.get("author", []))
 
 
 re_idx = re.compile(r"\S+")
@@ -122,7 +138,21 @@ def del_entries(io, app: App):
     valid_index_range = range(len(entries))
     indices_to_remove = set()
 
-    io.print(app.tabulate_entries(entries))
+    entries = app.get_entries()[0]
+    table_data = []
+    for i, (key, entry) in enumerate(entries.items()):
+        authors = ", ".join(str(person) for person in entry.persons.get("author", []))
+        title = entry.fields.get("title", "N/A")
+        journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
+        year = entry.fields.get("year", "N/A")
+        table_data.append([i, key, authors, title, journal, year])
+
+    io.print(
+        tabulate(
+            table_data, headers=["Idx", "Citekey", "Author", "Title", "Journal", "Year"]
+        ),
+        "\n",
+    )
 
     reply = (
         io.input(
