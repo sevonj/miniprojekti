@@ -1,6 +1,6 @@
 # miniprojekti
 
-![CI Badge](https://github.com/sevonj/miniprojekti/workflows/CI/badge.svg?branch=main)
+![CI Badge](https://github.com/sevonj/miniprojekti/actions/workflows/main.yml/badge.svg?branch=main)
 [![codecov](https://codecov.io/gh/sevonj/miniprojekti/graph/badge.svg?token=YENFDFJKT2)](https://codecov.io/gh/sevonj/miniprojekti)
 
 
@@ -14,7 +14,7 @@ Miniprojekti on täällä
 [Definition of Done ja tuntikirjaukset](https://tree.taiga.io/project/sevonj-miniprojekti/wiki/home)
 
 ### Ohjeet
-#### Vaatimusket:
+#### Vaatimukset:
 - Python versio 3.10 tai uudempi
 - Poetry
 
