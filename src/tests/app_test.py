@@ -7,16 +7,45 @@ This module contains unit tests for the App class.
 # pylint: disable=protected-access missing-class-docstring missing-function-docstring
 
 import unittest
+import os.path
 from unittest.mock import patch
 from urllib.error import HTTPError
 from pybtex.database import BibliographyData, Entry, Person
+from pybtex.utils import OrderedCaseInsensitiveDict
 from app import App
+
+TEMP_FILE_PATH = os.path.join("src", "tests", "temp")
+TEST_BIBSTRING = """@article{key,
+    AUTHOR = "Lastname, Firstname",
+    TITLE = "Title of Article",
+    YEAR = "1970",
+    JOURNAL = "Journal Name",
+    VOLUME = "1",
+    PAGES = "10"
+}
+"""
+TEST_ENTRY = Entry(
+    "article",
+    fields={
+        "TITLE": "Title of Article",
+        "YEAR": "1970",
+        "JOURNAL": "Journal Name",
+        "VOLUME": "1",
+        "PAGES": "10",
+    },
+    persons=OrderedCaseInsensitiveDict([("AUTHOR", [Person("Lastname, Firstname")])]),
+)
 
 
 class TestApp(unittest.TestCase):
     def setUp(self):
         self.app = App()
         self.app.create_bib()
+
+        # Temp dir
+        if not os.path.exists(TEMP_FILE_PATH):
+            os.makedirs(TEMP_FILE_PATH)
+
         self.entries = [
             Entry(
                 "article",
@@ -34,6 +63,64 @@ class TestApp(unittest.TestCase):
                 fields={"title": "Title3"},
             ),
         ]
+
+    def test_set_bib_path(self):
+        # Set str
+        test_path = "this/is/a/test/path"
+        self.app.set_bib_path(test_path)
+        self.assertEqual(self.app._bib_path, test_path)
+
+        # Set None
+        test_path = None
+        self.app.set_bib_path(test_path)
+        self.assertEqual(self.app._bib_path, test_path)
+
+    def test_get_bib_path(self):
+        # Get str
+        test_path = "this/is/a/test/path"
+        self.app._bib_path = test_path
+        self.assertEqual(self.app.get_bib_path(), test_path)
+
+        # Get None
+        self.app._bib_path = test_path
+        self.assertEqual(self.app.get_bib_path(), test_path)
+
+    def test_load_from_file(self):
+        test_path = os.path.join(TEMP_FILE_PATH, "test_load_from_file.bib")
+
+        # Delete old bibliography file
+        if os.path.exists(test_path):
+            os.remove(test_path)
+
+        # Create new bibliography file
+        with open(test_path, "w") as f:  # pylint: disable=unspecified-encoding
+            f.write(TEST_BIBSTRING)
+
+        # Load bibliography
+        self.app.load_from_file(test_path)
+
+        # Verify that the file is correctly loaded
+        loaded_entry = self.app._bib_data.entries["key"]
+        self.assertEqual(loaded_entry, TEST_ENTRY)
+
+    def test_save_to_file(self):
+        test_path = os.path.join(TEMP_FILE_PATH, "test_save_to_file.bib")
+
+        # Delete old test file
+        if os.path.exists(test_path):
+            os.remove(test_path)
+
+        # Prepare bibliography
+        self.app._bib_data.entries["key"] = TEST_ENTRY
+
+        # Save bibliography
+        self.app.save_to_file(test_path)
+
+        # Verify that the file is correctly saved
+        saved_bibstring = ""
+        with open(test_path, "r") as f:  # pylint: disable=unspecified-encoding
+            saved_bibstring = str(f.read())
+        self.assertEqual(saved_bibstring, TEST_BIBSTRING)
 
     def test_create_bib(self):
         self.app._bib_data = None

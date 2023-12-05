@@ -1,5 +1,6 @@
 *** Settings ***
 Library  ../AppLibrary.py
+Resource    resource.robot
 *** Variables ***
 
 *** Test Cases ***
