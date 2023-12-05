@@ -87,7 +87,6 @@ class App:
                 existing_title = existing_entry.fields.get("title")
                 if existing_title.lower() == title.lower():
                     return "Title Already Exists For Another Entry, Try Again"
-            return
 
         self._bib_data.add_entry(key, entry)
         return
@@ -127,13 +126,23 @@ class App:
                 str(person) for person in entry.persons.get("author", [])
             )
             title = entry.fields.get("title", "N/A")
-            journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
+            journal = entry.fields.get(
+                "journal",
+                entry.fields.get("publisher", "N/A")
+            )
             year = entry.fields.get("year", "N/A")
 
             table_data.append([idx, key, authors, title, journal, year])
 
         return tabulate(
-            table_data, headers=["ID", "Citekey", "Author", "Title", "Journal", "Year"]
+            table_data, headers=[
+                "ID",
+                "Citekey",
+                "Author",
+                "Title",
+                "Journal",
+                "Year"
+            ]
         )
 
     def find_entries_by_title(self, searched):
