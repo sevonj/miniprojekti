@@ -73,10 +73,12 @@ class App:
         except Exception as e:  # pylint: disable=broad-except
             return None, f"Failed to retrieve entries: {e}"
 
-    def add_entry(self, entry: Entry):
+    def add_entry(self, entry: Entry) -> None | str:
         """
         params:
             entry: this will be added
+        return:
+            Error message: None | str
         """
         key = str(uuid4())
         entries = self._bib_data.entries
@@ -86,9 +88,10 @@ class App:
             for _citekey, existing_entry in entries.items():
                 existing_title = existing_entry.fields.get("title")
                 if existing_title.lower() == title.lower():
-                    return  # "Title Already Exists For Another Entry, Try Again"
+                    return "Failed to add the entry: Another entry with this title already exists."
 
         self._bib_data.add_entry(key, entry)
+        return
 
     def del_entries(self, entry_indices: list[int]):
         """Deletes select entries, or all.

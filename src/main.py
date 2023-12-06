@@ -59,7 +59,7 @@ def get_entries(io, app: App):
     io.print(app.get_entries()[1])
 
 
-def add_entries(io, app: App):
+def add_entry(io, app: App):
     """UI fn: Add a new entry"""
     io.print("Enter article citation details:")
     author = io.input("Author: ")
@@ -69,10 +69,6 @@ def add_entries(io, app: App):
     volume = io.input("Volume: ")
     number = io.input("Number: ")
     pages = io.input("Pages: ")
-
-    if not any([author, title, journal, year, volume, number, pages]):
-        io.print("An entry is missing, try again.")
-        return
 
     # Create an Entry object representing the article citation
     entry = Entry(
@@ -88,9 +84,12 @@ def add_entries(io, app: App):
         },
     )
 
-    # Add the entry to the BibliographyData
-    app.add_entry(entry)
-    io.print("Entry successfully saved to the database.")
+    # Add the entry to the Bibliography
+    err = app.add_entry(entry)
+    if err is None:
+        io.print("Entry successfully added to the database.")
+    else:
+        print(err)
 
 
 def search_entries(io, app: App):
@@ -242,7 +241,7 @@ def main(io):
                 print_help(io)
 
             case "ADD":
-                add_entries(io, app)
+                add_entry(io, app)
 
             case "DOI":
                 search_doi(io, app)
