@@ -61,9 +61,9 @@ Delete All Clears BiblioGraphy
     Add Input    Add
     Add New Entry
     Add Input    Add
-    Add New Entry_2
+    Add New Entry    Test Article 2
     Add Input    Add
-    Add New Entry_3
+    Add New Entry    Test Article 3
     Add Input    delete
     Add Input    All
     Add Input    y
@@ -83,9 +83,9 @@ User Can Delete One Entry
     Add Input    Add
     Add New Entry
     Add Input    Add
-    Add New Entry_2
+    Add New Entry    Test Article 2
     Add Input    Add
-    Add New Entry_3
+    Add New Entry    Test Article 3
     Add Input    delete
     Add Input    1
     Add Input    y
@@ -126,29 +126,3 @@ User Can Add Doi Search Result To BiblioGraphy
     Output Should Contain    Framing the community data system interface
     Output Should Contain    Entry successfully saved to the database
     Output Should Contain    Framing the community data system interface
-
-*** Keywords ***
-Input New Entry Details
-    [Arguments]    ${author}    ${title}    ${journal}    ${year}    ${volume}    ${number}    ${pages}
-    Add Input    ${author}
-    Add Input    ${title}
-    Add Input    ${journal}
-    Add Input    ${year}
-    Add Input    ${volume}
-    Add Input    ${number}
-    Add Input    ${pages}
-
-Add New Entry
-    Input New Entry Details    Teppo Testaaja    Test Article    Journal of Articles    2023    N/A    N/A    N/A
-
-Add New Entry_2
-    Input New Entry Details    Teppo Testaaja    Test Article_2    Journal of Articles    2023    N/A    N/A    N/A
-    
-Add New Entry_3
-    Input New Entry Details    Teppo Testaaja    Test Article_3    Journal of Articles    2023    N/A    N/A    N/A
-
-Add New Entry_4
-    Input New Entry Details    Teppo Testaaja    Test Article_4    Journal of Articles    2023    N/A    N/A    N/A
-
-Add New Entry_5
-    Input New Entry Details    Teppo Testaaja    Test Article_5    Journal of Articles    2023    N/A    N/A    N/A
