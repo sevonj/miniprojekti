@@ -29,7 +29,7 @@ List Command Can Be Executed
     Add Input  exit
     Run Application
     Output Should Contain  Enter article citation details
-    Output Should Contain  Entry successfully saved to the database
+    Output Should Contain  Entry successfully added to the database
     Output Should Contain  Testaaja, Teppo
 
 Search Command Can Be Executed
@@ -49,7 +49,7 @@ New Entry Can Be Added
     Add Input  exit
     Run Application
     Output Should Contain  Enter article citation details
-    Output Should Contain  Entry successfully saved to the database
+    Output Should Contain  Entry successfully added to the database
 
 List Command Return Infomessage If No Entries
     Add Input  list

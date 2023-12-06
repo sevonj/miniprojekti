@@ -91,7 +91,7 @@ class App:
                     return "Failed to add the entry: Another entry with this title already exists."
 
         self._bib_data.add_entry(key, entry)
-        return
+        return None
 
     def del_entries(self, entry_indices: list[int]):
         """Deletes select entries, or all.
