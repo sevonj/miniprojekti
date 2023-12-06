@@ -4,6 +4,12 @@ Resource    resource.robot
 
 
 *** Test Cases ***
+User Gets Feedback When Invoking Unrecognized Command
+    Add Input    ASDF
+    Add Input    exit
+    Run Application
+    Output Should Contain    Unrecognized command
+
 Exit The App
     Add Input    exit
     Run Application
