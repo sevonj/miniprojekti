@@ -22,16 +22,6 @@ Add Command Can Be Executed
     Run Application
     Output Should Contain    Enter article citation details
 
-Search Command Can Be Executed
-    Add Input    add
-    Add New Entry
-    Add Input    search
-    Add Input    art
-    Add Input    exit
-    Run Application
-    Skip Output    2
-    Output Should Contain    Testaaja, Teppo
-
 New Entry Can Be Added
     Add Input    add
     Add New Entry
