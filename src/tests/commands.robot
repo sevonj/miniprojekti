@@ -29,8 +29,7 @@ Search Command Can Be Executed
     Add Input  art
     Add Input  exit
     Run Application
-    Skip Output
-    Skip Output
+    Skip Output    2
     Output Should Contain    Testaaja, Teppo
     
 New Entry Can Be Added

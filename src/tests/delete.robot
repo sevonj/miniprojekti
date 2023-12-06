@@ -5,7 +5,7 @@ Resource    resource.robot
 
 *** Test Cases ***
 
-Delete All Clears BiblioGraphy
+User Can Delete All Entries
     Add Input    Add
     Add New Entry
     Add Input    Add
@@ -18,16 +18,10 @@ Delete All Clears BiblioGraphy
     Add Input    list
     Add Input    exit
     Run Application
-    Skip Output
-    Skip Output
-    Skip Output
-    Skip Output
-    Skip Output
-    Skip Output
-    Skip Output
+    Skip Output    7
     Output Should Contain    No entries found
 
-User Can Delete One Entry
+User Can Delete Select Entries
     Add Input    Add
     Add New Entry
     Add Input    Add
@@ -40,11 +34,5 @@ User Can Delete One Entry
     Add Input    list
     Add Input    exit
     Run Application
-    Skip Output
-    Skip Output
-    Skip Output
-    Skip Output
-    Skip Output
-    Skip Output
-    Skip Output
+    Skip Output    7
     Output Should Contain    Testaaja, Teppo
