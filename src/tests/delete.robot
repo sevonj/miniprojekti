@@ -1,10 +1,9 @@
 *** Settings ***
-Library  ../AppLibrary.py
+Library     ../AppLibrary.py
 Resource    resource.robot
-*** Variables ***
+
 
 *** Test Cases ***
-
 User Can Delete All Entries
     Add Input    Add
     Add New Entry

@@ -1,5 +1,6 @@
 *** Settings ***
-Library  ../AppLibrary.py
+Library     ../AppLibrary.py
+
 
 *** Keywords ***
 Input New Entry Details
@@ -15,4 +16,3 @@ Input New Entry Details
 Add New Entry
     [Arguments]    ${title}="Test Article"
     Input New Entry Details    Teppo Testaaja    ${title}    Journal of Articles    2023    N/A    N/A    N/A
-    
