@@ -73,13 +73,25 @@ class App:
         except Exception as e:  # pylint: disable=broad-except
             return None, f"Failed to retrieve entries: {e}"
 
-    def add_entry(self, entry: Entry):
+    def add_entry(self, entry: Entry) -> None | str:
         """
         params:
             entry: this will be added
+        return:
+            Error message: None | str
         """
         key = str(uuid4())
+        entries = self._bib_data.entries
+        title = entry.fields.get("title")
+
+        if entries:
+            for _citekey, existing_entry in entries.items():
+                existing_title = existing_entry.fields.get("title")
+                if existing_title.lower() == title.lower():
+                    return "Failed to add the entry: Another entry with this title already exists."
+
         self._bib_data.add_entry(key, entry)
+        return None
 
     def del_entries(self, entry_indices: list[int]):
         """Deletes select entries, or all.
@@ -116,13 +128,23 @@ class App:
                 str(person) for person in entry.persons.get("author", [])
             )
             title = entry.fields.get("title", "N/A")
-            journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
+            journal = entry.fields.get(
+                "journal",
+                entry.fields.get("publisher", "N/A")
+            )
             year = entry.fields.get("year", "N/A")
 
             table_data.append([idx, key, authors, title, journal, year])
 
         return tabulate(
-            table_data, headers=["ID", "Citekey", "Author", "Title", "Journal", "Year"]
+            table_data, headers=[
+                "ID",
+                "Citekey",
+                "Author",
+                "Title",
+                "Journal",
+                "Year"
+            ]
         )
 
     def find_entries_by_title(self, searched):

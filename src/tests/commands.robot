@@ -29,7 +29,7 @@ List Command Can Be Executed
     Add Input  exit
     Run Application
     Output Should Contain  Enter article citation details
-    Output Should Contain  Entry successfully saved to the database
+    Output Should Contain  Entry successfully added to the database
     Output Should Contain  Testaaja, Teppo
 
 Search Command Can Be Executed
@@ -49,7 +49,7 @@ New Entry Can Be Added
     Add Input  exit
     Run Application
     Output Should Contain  Enter article citation details
-    Output Should Contain  Entry successfully saved to the database
+    Output Should Contain  Entry successfully added to the database
 
 List Command Return Infomessage If No Entries
     Add Input  list
@@ -61,9 +61,9 @@ Delete All Clears BiblioGraphy
     Add Input    Add
     Add New Entry
     Add Input    Add
-    Add New Entry
+    Add New Entry_2
     Add Input    Add
-    Add New Entry
+    Add New Entry_3
     Add Input    delete
     Add Input    All
     Add Input    y
@@ -83,9 +83,9 @@ User Can Delete One Entry
     Add Input    Add
     Add New Entry
     Add Input    Add
-    Add New Entry
+    Add New Entry_2
     Add Input    Add
-    Add New Entry
+    Add New Entry_3
     Add Input    delete
     Add Input    1
     Add Input    y
@@ -140,4 +140,15 @@ Input New Entry Details
 
 Add New Entry
     Input New Entry Details    Teppo Testaaja    Test Article    Journal of Articles    2023    N/A    N/A    N/A
+
+Add New Entry_2
+    Input New Entry Details    Teppo Testaaja    Test Article_2    Journal of Articles    2023    N/A    N/A    N/A
     
+Add New Entry_3
+    Input New Entry Details    Teppo Testaaja    Test Article_3    Journal of Articles    2023    N/A    N/A    N/A
+
+Add New Entry_4
+    Input New Entry Details    Teppo Testaaja    Test Article_4    Journal of Articles    2023    N/A    N/A    N/A
+
+Add New Entry_5
+    Input New Entry Details    Teppo Testaaja    Test Article_5    Journal of Articles    2023    N/A    N/A    N/A
