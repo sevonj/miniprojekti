@@ -6,6 +6,7 @@ It should be kept UI-independent; No UI code here.
 
 """
 from uuid import uuid4
+import re
 import urllib.request
 from urllib.error import HTTPError
 from pybtex.database import BibliographyData, Entry, parse_string, parse_file
@@ -145,6 +146,17 @@ class App:
                 filtered_entries[citekey] = entry
 
         return filtered_entries
+
+    def format_authors(self, authors):
+        """
+        Format a list of authors to Author et al if over 3 authors
+        params: stringauthor field from bibtex
+        Returns: formatted authors
+        """
+        splitted = re.split(" and | &", authors)
+        if len(splitted) > 3:
+            authors = f"{splitted[0]} et al."
+        return authors
 
     def get_bibtex_by_doi(self, doi, doi_url=BASE_DOI_URL):
         """Get a BibTeX entry by DOI
