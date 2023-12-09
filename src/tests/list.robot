@@ -12,6 +12,7 @@ List Command Can Be Executed
     Run Application
     Output Should Contain    Enter article citation details
     Output Should Contain    Entry successfully added to the database
+    Skip Output
     Output Should Contain    Testaaja, Teppo
 
 List Command Return Infomessage If No Entries

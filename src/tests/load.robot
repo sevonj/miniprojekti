@@ -19,6 +19,7 @@ User Can Load Saved Data After Successful In-App Deletion
     Run Application
     Skip Output    4
     Output Should Contain    Loaded from
+    Skip Output
     Output Should Contain    Testaaja, Teppo
 
 User Can Load from File Without Any Extension
@@ -36,6 +37,7 @@ User Can Load from File Without Any Extension
     Run Application
     Skip Output    4
     Output Should Contain    Loaded from
+    Skip Output
     Output Should Contain    Testaaja, Teppo
 
 User Can Not Load From Non Existent File

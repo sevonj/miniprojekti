@@ -28,4 +28,5 @@ User Can Add Doi Search Result To BiblioGraphy
     Run Application
     Output Should Contain    Framing the community data system interface
     Output Should Contain    Entry successfully saved to the database
+    Skip Output
     Output Should Contain    Framing the community data system interface
