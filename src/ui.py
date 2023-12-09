@@ -170,7 +170,7 @@ def del_entries(io, app: App):
 
     io.print(
         tabulate(
-            format_entries(entries, DEFAULT_FIELDS),
+            format_entries(entries, ["idx"] + DEFAULT_FIELDS),
             headers="keys",
         ),
         "\n",
