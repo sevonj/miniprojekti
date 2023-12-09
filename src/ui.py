@@ -12,6 +12,7 @@ from tabulate import tabulate
 from app import App
 
 DEFAULT_FIELDS = ["citekey", "author", "title", "journal", "year"]
+DEFAULT_LIMIT = 40
 
 
 def format_entries(entries: [], fields=None) -> []:
@@ -36,6 +37,9 @@ def format_entries(entries: [], fields=None) -> []:
             entrydict["citekey"] = citekey  # Citekey
             entrydict["author"] = entry.persons.get("author", [])
             for field in entry.fields:  # Get all fields
+                if field.lower() == "title":
+                    entrydict["title"] = limit_str_len(entry.fields.get(field, "N/A"))
+                    continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
         # Custom field keys were given. Return whichever fields were asked.
@@ -50,11 +54,28 @@ def format_entries(entries: [], fields=None) -> []:
                 if field.lower() == "author":
                     entrydict["Author"] = entry.persons.get("author", [])
                     continue
+                if field.lower() == "title":
+                    entrydict["Title"] = limit_str_len(entry.fields.get(field, "N/A"))
+                    continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
         ret_entries.append(entrydict)
 
     return ret_entries
+
+
+def limit_str_len(string: str, limit=DEFAULT_LIMIT) -> str:
+    """Limits the length of a string to a given limit.
+    Args:
+        string (str): The string to be limited
+        limit (int): The limit of the string length
+
+    Returns:
+        str: The limited string
+    """
+    if len(string) > limit:
+        return string[:limit] + "..."
+    return string
 
 
 def print_help(io):
