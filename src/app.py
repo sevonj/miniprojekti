@@ -9,7 +9,6 @@ from uuid import uuid4
 import urllib.request
 from urllib.error import HTTPError
 from pybtex.database import BibliographyData, Entry, parse_string, parse_file
-from tabulate import tabulate
 
 BASE_DOI_URL = "http://dx.doi.org/"
 
