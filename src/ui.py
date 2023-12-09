@@ -8,7 +8,53 @@ from textwrap import dedent
 import re
 from os.path import realpath
 from pybtex.database import Entry, Person, PybtexError
+from tabulate import tabulate
 from app import App
+
+DEFAULT_FIELDS = ["citekey", "author", "title", "journal", "year"]
+
+
+def format_entries(entries: [], fields=None) -> []:
+    """
+    Makes entries into a friendlier for further use, such as tabulate.
+    params:
+        entries:
+            List of entries
+        fields: (optional) (case-insensitive):
+            Choose specific fields for the output. Leave out for default.
+            Example: ["idx", "citekey", "Author", "YEAR", "nonexistent-field"]
+    return:
+        entries: [{}]
+            Entries are dicts. Keys are field names and capitalized.
+    """
+    ret_entries = []
+    for idx, (citekey, entry) in enumerate(entries.items()):
+        entrydict = {}
+
+        # No custom field keys given. Return citekey + all fields
+        if fields is None:
+            entrydict["citekey"] = citekey  # Citekey
+            entrydict["author"] = entry.persons.get("author", [])
+            for field in entry.fields:  # Get all fields
+                entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
+
+        # Custom field keys were given. Return whichever fields were asked.
+        else:
+            for field in fields:
+                if field.lower() == "idx":
+                    entrydict["Idx"] = idx
+                    continue
+                if field.lower() == "citekey":
+                    entrydict["Citekey"] = citekey
+                    continue
+                if field.lower() == "author":
+                    entrydict["Author"] = entry.persons.get("author", [])
+                    continue
+                entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
+
+        ret_entries.append(entrydict)
+
+    return ret_entries
 
 
 def print_help(io):
@@ -46,16 +92,20 @@ Available commands (case-insensitive):
 
 def get_entries(io, app: App):
     """UI fn: Print all entries"""
-    # Check if there are any entries and print infomessage is there are none
-    if app.get_entries()[0] is None:
-        io.print(app.get_entries()[1])
+    entries = app.get_entries()[0]
+
+    if entries is None or len(entries) == 0:
+        io.print("No entries found.")
         return
 
-    # Get entries and print tabulated form
-    io.print(app.tabulate_entries(app.get_entries()[0]))
-
-    # Print infomessage when successfully retrieved entries
-    io.print(app.get_entries()[1])
+    io.print("Succesfully retrieved entries:\n")
+    io.print(
+        tabulate(
+            format_entries(entries, DEFAULT_FIELDS),
+            headers="keys",
+        ),
+        "\n",
+    )
 
 
 def add_entry(io, app: App):
@@ -95,7 +145,13 @@ def search_entries(io, app: App):
     """UI fn: Search for an entry"""
     search = io.input("Search: Enter title of the citation: ")
     filtered_entries = app.find_entries_by_title(search)
-    io.print(app.tabulate_entries(filtered_entries))
+    io.print(
+        tabulate(
+            format_entries(filtered_entries, DEFAULT_FIELDS),
+            headers="keys",
+        ),
+        "\n",
+    )
 
 
 re_idx = re.compile(r"\S+")
@@ -112,7 +168,13 @@ def del_entries(io, app: App):
     valid_index_range = range(len(entries))
     indices_to_remove = set()
 
-    io.print(app.tabulate_entries(entries))
+    io.print(
+        tabulate(
+            format_entries(entries, DEFAULT_FIELDS),
+            headers="keys",
+        ),
+        "\n",
+    )
 
     reply = (
         io.input(
@@ -207,8 +269,13 @@ def search_doi(io, app: App):
     search_result = app.get_bibtex_by_doi(doi)
     if search_result.startswith(" @"):
         entry = app.parse_entry_from_bibtex(search_result)
-        temp_dict = {doi: entry}
-        io.print(app.tabulate_entries(temp_dict))
+        io.print(
+            tabulate(
+                format_entries({doi: entry}, DEFAULT_FIELDS),
+                headers="keys",
+            ),
+            "\n",
+        )
         confirm_add = io.input(
             "Entry successfully retrieved. Would you like to add it to bibliography? y/N:"
         )

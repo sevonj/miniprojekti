@@ -39,7 +39,7 @@ User Can Delete Select Entries
     Add Input    list
     Add Input    exit
     Run Application
-    Skip Output    7
+    Skip Output    8
     Output Should Contain    Testaaja, Teppo
 
 User Can NOT Delete out-of-bounds Indices
