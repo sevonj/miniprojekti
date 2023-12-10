@@ -22,12 +22,13 @@ class AppLibrary:
         if not value in output:
             raise AssertionError(f'"{value}" is not {output}')
 
-    def skip_output(self):
+    def skip_output(self, n: str = "1"):
         """
         Pop output string from the queue without checking.
         Useful for irrelevant lines.
         """
-        self._io.pop_output()
+        for _ in range(int(n)):
+            self._io.pop_output()
 
     def run_application(self):
         """Run the app with predetermined inputs."""
