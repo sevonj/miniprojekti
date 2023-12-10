@@ -35,7 +35,7 @@ def format_entries(entries: [], fields=None) -> []:
         # No custom field keys given. Return citekey + all fields
         if fields is None:
             entrydict["citekey"] = citekey  # Citekey
-            entrydict["author"] = entry.persons.get("author", [])
+            entrydict["author"] = format_authors(entry.persons.get("author", []))
             for field in entry.fields:  # Get all fields
                 if field.lower() == "title":
                     entrydict["title"] = limit_str_len(entry.fields.get(field, "N/A"))
@@ -52,7 +52,9 @@ def format_entries(entries: [], fields=None) -> []:
                     entrydict["Citekey"] = citekey
                     continue
                 if field.lower() == "author":
-                    entrydict["Author"] = entry.persons.get("author", [])
+                    entrydict["Author"] = format_authors(
+                        entry.persons.get("author", [])
+                    )
                     continue
                 if field.lower() == "title":
                     entrydict["Title"] = limit_str_len(entry.fields.get(field, "N/A"))
@@ -76,6 +78,21 @@ def limit_str_len(string: str, limit=DEFAULT_LIMIT) -> str:
     if len(string) > limit:
         return string[:limit] + "..."
     return string
+
+
+def format_authors(authors):
+    """
+    Format a list of authors to Author et al if over 3 authors
+    params: list of Person objects
+    Returns: string of formatted authors
+    """
+    if len(authors) > 3:
+        return f"{authors[0]} et al."
+
+    authorstring = f"{authors[0]}"
+    for i in range(1, len(authors)):
+        authorstring += f" and {authors[i]}"
+    return authorstring
 
 
 def print_help(io):
