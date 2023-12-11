@@ -265,16 +265,24 @@ class TestApp(unittest.TestCase):
     def test_valid_doi_returns_bibtex(self):
         # This is a valid DOI
         doi = "10.1145/2783446.2783605"
-        bibtex = self.app.get_bibtex_by_doi(doi)
+        success, bibtex = self.app.get_bibtex_by_doi(doi)
 
-        # bibtex should start with " @"
+        # valid doi returns tuple starting with True
+        self.assertTrue(success)
+
+        # valid doi returns tuple where bibtex should start with " @"
         self.assertTrue(bibtex.startswith(" @"))
 
     def test_doi_not_found_returns_infomessage(self):
         # This is an invalid DOI
         doi = "10.1145/2783446.2783605x"
-        bibtex = self.app.get_bibtex_by_doi(doi)
-        self.assertEqual(bibtex, "DOI not found.")
+        success, bibtex = self.app.get_bibtex_by_doi(doi)
+
+        # invalid doi returns tuple starting with False
+        self.assertFalse(success)
+
+        # invalid doi returns tuple where bibtex should be an infomessage
+        self.assertEqual(bibtex, "\n\tDOI not found.\n")
 
     @patch("urllib.request.urlopen")
     def test_doi_service_not_available_returns_infomessage(self, mock_urlopen):
@@ -285,7 +293,10 @@ class TestApp(unittest.TestCase):
 
         # This is a valid DOI
         doi = "10.1145/2783446.2783605"
-        bibtex = self.app.get_bibtex_by_doi(doi)
+        success, bibtex = self.app.get_bibtex_by_doi(doi)
+
+        # unsuccessful search returns tuple starting with False
+        self.assertFalse(success)
 
         # Mocked urlopen should raise an HTTPError with 503 status code
-        self.assertEqual(bibtex, "Service unavailable.")
+        self.assertEqual(bibtex, "\n\tService unavailable.\n")

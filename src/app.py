@@ -8,7 +8,13 @@ It should be kept UI-independent; No UI code here.
 from uuid import uuid4
 import urllib.request
 from urllib.error import HTTPError
-from pybtex.database import BibliographyData, Entry, parse_string, parse_file
+from pybtex.database import (
+    BibliographyData,
+    Entry,
+    parse_string,
+    parse_file,
+    InvalidNameString,
+)
 
 BASE_DOI_URL = "http://dx.doi.org/"
 
@@ -153,11 +159,11 @@ class App:
         try:
             with urllib.request.urlopen(req) as f:
                 bibtex_entry = f.read().decode()
-            return bibtex_entry
+            return True, bibtex_entry
         except HTTPError as e:
             if e.code == 404:
-                return "DOI not found."
-            return "Service unavailable."
+                return False, "\n\tDOI not found.\n"
+            return False, "\n\tService unavailable.\n"
 
     def parse_entry_from_bibtex(self, bibtex_entry):
         """Parse a BibTeX entry
@@ -167,5 +173,16 @@ class App:
         Returns:
             A pybtex Entry object
         """
-        bib_data = parse_string(bibtex_entry, "bibtex")
-        return list(bib_data.entries.values())[0]
+        try:
+            bib_data = parse_string(bibtex_entry, "bibtex")
+            return True, list(bib_data.entries.values())[0]
+
+        except InvalidNameString as e:
+            return (
+                False,
+                f"\n\tInvalid name format encountered: {e} "
+                "\n\tPlease enter citation manually using ADD command.\n",
+            )
+
+        except Exception as e:  # pylint: disable=broad-except
+            return False, f"\n\tAn error occured while parsing the BibTex entry: {e}\n"
