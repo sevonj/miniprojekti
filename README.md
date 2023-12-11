@@ -40,6 +40,20 @@ Miniprojekti on täällä
 
 "Ryhmä4" nimellä perustettiin ryhmämme. Sovelluksemme on yksinkertainen komentorivi-sovellus jonka avulla pystyy luoda/tuoda/viedä bibliograafisia viitteitä `LaTeX` muodaossa. Taustalla käytetään muutamaa 3rd-party kirjastoa, kuten `pybtex` ja `tabulate`, loput riippuvuuksiamme näkyy [täältä](./pyproject.toml).
 
+##### Mikä sujui projektissa hyvin, mitä pitäisi parantaa seuraavaa kertaa varten
+
+Kun toi "Assembler" hajosi alussa, turhaan meni aikaa manual aikatauluttamiseen satunnaisesti arvottujen ryhmäjäsenten kanssa.
+
+##### Mitä asioita opitte, mitä asioita olisitte halunneet oppia, mikä tuntui turhalta
+
+Opimme Taigan, feautre branch:ien käytön, sekä parikoodaamisen arvoa.
+
+Tuntui vähän ikävältä parikoodamisen yhteisten kommittien säätäminen, joten luovutettiin ideasta ja jakeltiin mieluummin USER STORY:en TASK:it 1-1 per nenä ja tehtiin asiat vuorotelleen, kun kuitenkin molemmat oli kärryllä. 
+
+<!--
+    Kerrataan jokaisen sprintin aikana kohdatut ongelmat (prosessiin-, projektityöskentelyyn- ja teknisiin asioihin liittyvät)
+-->
+
 ##### Sprint 1
 
 Tehtiin Definition of Done ja otettiin käyttöön placeholder yksikkötestit. Alusta lähtien pyrimme modulaarisesti rakentaa ylös sovelluksemme, `app.py` sisälsi sovelluslogiika, `main.py` sisälsi käyttäjä-interaktioon liittyviä asioita. Sovittiin, että noudataan feature-branch:ien käyttöä, jota otimme noin vakavasti, ettei sallittiin PR:in merge:eä niin pitkään kuin jokin moduuli ei sisältänyt pelkästään sinne kuuluvia osia. CI pipeline rakennettu.
