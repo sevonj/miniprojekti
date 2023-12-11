@@ -29,7 +29,7 @@ Miniprojekti on täällä
 
 ### Arvosteluperusteet
 
-- ryhmän kaikki jäsenet ovat antaneet vertaispalautetta [täältä](https://study.cs.helsinki.fi/stats/courses/ohtu2023/miniproject) ("Create peer review" napin takaa) viimeistään perjantaina 22.12. klo 23:59
+- ryhmän kaikki jäsenet ovat antaneet vertaispalautetta [täältä](https://study.cs.helsinki.fi/stats/courses/ohtu2023/miniproject) ("Create peer review" napin takaa) **viimeistään perjantaina 22.12. klo 23:59**
     - [ ] Julius Sevon
     - [ ] Juho Paananen
     - [ ] Miina Saromaa
