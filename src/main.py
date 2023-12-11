@@ -15,6 +15,7 @@ from ui import (
     save_entries,
     search_doi,
     search_entries,
+    edit_entry,
 )
 
 
@@ -55,6 +56,9 @@ def main(io):
 
             case "LOAD":
                 load_entries(io, app)
+
+            case "EDIT":
+                edit_entry(io, app)
 
             case _:
                 io.print(f"Unrecognized command: '{command}'")

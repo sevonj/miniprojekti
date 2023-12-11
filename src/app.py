@@ -8,7 +8,7 @@ It should be kept UI-independent; No UI code here.
 from uuid import uuid4
 import urllib.request
 from urllib.error import HTTPError
-from pybtex.database import BibliographyData, Entry, parse_string, parse_file
+from pybtex.database import BibliographyData, Entry, Person, parse_string, parse_file
 from tabulate import tabulate
 
 BASE_DOI_URL = "http://dx.doi.org/"
@@ -128,23 +128,13 @@ class App:
                 str(person) for person in entry.persons.get("author", [])
             )
             title = entry.fields.get("title", "N/A")
-            journal = entry.fields.get(
-                "journal",
-                entry.fields.get("publisher", "N/A")
-            )
+            journal = entry.fields.get("journal", entry.fields.get("publisher", "N/A"))
             year = entry.fields.get("year", "N/A")
 
             table_data.append([idx, key, authors, title, journal, year])
 
         return tabulate(
-            table_data, headers=[
-                "ID",
-                "Citekey",
-                "Author",
-                "Title",
-                "Journal",
-                "Year"
-            ]
+            table_data, headers=["ID", "Citekey", "Author", "Title", "Journal", "Year"]
         )
 
     def find_entries_by_title(self, searched):
@@ -167,6 +157,24 @@ class App:
                 filtered_entries[citekey] = entry
 
         return filtered_entries
+
+    def find_entries_by_citekey(self, searched):
+        """Find an entry where the searched word is the citekey.
+
+        Args:
+            searched: A string, the citekey of the searched entry
+        Returns:
+            A pybtex Entry object if found, else None
+        """
+
+        if self.get_entries()[0] is None:
+            return None
+
+        for citekey, entry in self.get_entries()[0].items():
+            if citekey.lower() == searched.lower():
+                return entry
+
+        return None
 
     def get_bibtex_by_doi(self, doi, doi_url=BASE_DOI_URL):
         """Get a BibTeX entry by DOI
@@ -203,3 +211,24 @@ class App:
         """
         bib_data = parse_string(bibtex_entry, "bibtex")
         return list(bib_data.entries.values())[0]
+
+    def edit_entry(self, citekey, field_to_edit, edited_value):
+        """Edit an entry's field.
+
+        Args:
+            citekey: A string, the citekey of the entry to be edited
+            field_to_edit: A string, the field to be edited
+            edited_value: A string, the new value for the field
+        Returns:
+            True if the entry was edited successfully, False otherwise
+        """
+
+        if citekey in self._bib_data.entries:
+            entry = self._bib_data.entries[citekey]
+            if field_to_edit == "author":
+                entry.persons["author"] = [Person(edited_value)]
+                return True
+            entry.fields[field_to_edit.lower()] = edited_value
+            return True
+        else:
+            return False
