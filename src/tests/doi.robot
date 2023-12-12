@@ -30,3 +30,10 @@ User Can Add Doi Search Result To BiblioGraphy
     Output Should Contain    Entry successfully saved to the database
     Skip Output
     Output Should Contain    Framing the community data system interf...
+
+User Gets Infomessage If Doi Search Is Unsuccessful
+    Add Input    doi
+    Add Input    10.1215/0961754x-7299546
+    Add Input    exit
+    Run Application
+    Output Should Contain    Invalid name format encountered

@@ -10,7 +10,7 @@ import unittest
 import os.path
 from unittest.mock import patch
 from urllib.error import HTTPError
-from pybtex.database import BibliographyData, Entry, Person
+from pybtex.database import BibliographyData, Entry, Person, InvalidNameString
 from pybtex.utils import OrderedCaseInsensitiveDict
 from app import App
 
@@ -265,16 +265,24 @@ class TestApp(unittest.TestCase):
     def test_valid_doi_returns_bibtex(self):
         # This is a valid DOI
         doi = "10.1145/2783446.2783605"
-        bibtex = self.app.get_bibtex_by_doi(doi)
+        success, bibtex = self.app.get_bibtex_by_doi(doi)
 
-        # bibtex should start with " @"
+        # valid doi returns tuple starting with True
+        self.assertTrue(success)
+
+        # valid doi returns tuple where bibtex should start with " @"
         self.assertTrue(bibtex.startswith(" @"))
 
     def test_doi_not_found_returns_infomessage(self):
         # This is an invalid DOI
         doi = "10.1145/2783446.2783605x"
-        bibtex = self.app.get_bibtex_by_doi(doi)
-        self.assertEqual(bibtex, "DOI not found.")
+        success, bibtex = self.app.get_bibtex_by_doi(doi)
+
+        # invalid doi returns tuple starting with False
+        self.assertFalse(success)
+
+        # invalid doi returns tuple where bibtex should be an infomessage
+        self.assertEqual(bibtex, "\n\tDOI not found.\n")
 
     @patch("urllib.request.urlopen")
     def test_doi_service_not_available_returns_infomessage(self, mock_urlopen):
@@ -285,7 +293,55 @@ class TestApp(unittest.TestCase):
 
         # This is a valid DOI
         doi = "10.1145/2783446.2783605"
-        bibtex = self.app.get_bibtex_by_doi(doi)
+        success, bibtex = self.app.get_bibtex_by_doi(doi)
+
+        # unsuccessful search returns tuple starting with False
+        self.assertFalse(success)
 
         # Mocked urlopen should raise an HTTPError with 503 status code
-        self.assertEqual(bibtex, "Service unavailable.")
+        self.assertEqual(bibtex, "\n\tService unavailable.\n")
+
+    def test_parse_entry_from_bibtex(self):
+        # This is a valid BibTeX entry string
+        bibtex_entry = """@article{key,
+                            author={Maksimainen, Ville},
+                            title={Article of Testing},
+                            year={1980},
+                            journal={Journal of Test Articles},
+                            volume={1},
+                            pages={10}}"""
+        success, entry = self.app.parse_entry_from_bibtex(bibtex_entry)
+
+        # parsed entry should be an instance of Entry
+        self.assertIsInstance(entry, Entry)
+
+        # parsed entry should be a success
+        self.assertTrue(success)
+
+        # parsed entry should have correct fields
+        self.assertEqual(entry.fields["title"], "Article of Testing")
+        self.assertEqual(entry.fields["year"], "1980")
+        self.assertEqual(entry.fields["journal"], "Journal of Test Articles")
+        self.assertEqual(entry.fields["volume"], "1")
+        self.assertEqual(entry.fields["pages"], "10")
+
+        # parsed entry should have correct persons
+        self.assertEqual(entry.persons["author"][0].last_names[0], "Maksimainen")
+        self.assertEqual(entry.persons["author"][0].first_names[0], "Ville")
+
+    def test_parse_entry_from_bibtex_with_invalid_bibtex_returns_none(self):
+        # This is an invalid BibTeX entry string
+        bibtex_entry = """@article{key,
+                            author={Maksimainen, Ville, Viinanen, Kimmo},
+                            title={Article of Testing},
+                            year={1980},
+                            journal={Journal of Test Articles},
+                            volume={1},
+                            pages={10}"""
+        success = self.app.parse_entry_from_bibtex(bibtex_entry)[0]
+
+        # unsuccessful parsing raises an exception
+        self.assertRaises(InvalidNameString)
+
+        # unsuccessful parsing returns tuple starting with False
+        self.assertFalse(success)
