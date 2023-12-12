@@ -15,7 +15,7 @@ DEFAULT_FIELDS = ["citekey", "author", "title", "journal", "year"]
 DEFAULT_LIMIT = 40
 
 
-def format_entries(entries: list, fields=None) -> []:
+def format_entries(entries: list, fields=None) -> list:
     """Makes entries into a friendlier for further use, such as tabulate.
 
     Args:
