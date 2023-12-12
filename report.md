@@ -19,11 +19,15 @@ Opimme Taigan, feautre branch:ien käytön, sekä parikoodaamisen arvoa.
 
 Tuntui vähän ikävältä parikoodamisen yhteisten kommittien säätäminen, joten luovutettiin ideasta ja jakeltiin mieluummin USER STORY:en TASK:it 1-1 per nenä ja tehtiin asiat vuorotelleen, kun kuitenkin molemmat oli kärryllä. 
 
+## Sprintien läpikäynti
+
 <!--
     Kerrataan jokaisen sprintin aikana kohdatut ongelmat (prosessiin-, projektityöskentelyyn- ja teknisiin asioihin liittyvät)
 -->
 
-## Sprint 1
+Simuloitiin työpaikan ympäristö ja harrastettiin Scrum:in toiminnat tässä 4 viikon aikana, jokaisen Sprintimme pituus oli 1 viikko, jäsenet kulutti suunnilleen 6 tuntia/nenä/sprintti. Ensimmäistä Sprintiä lukuunottamatta pidettiin retrospektiivi Sprintien lopussa. Alla käydään läpi yksittäisten jaksojen sisällöt/tapahtumat.
+
+### Sprint 1
 
 Tehtiin Definition of Done ja otettiin käyttöön placeholder yksikkötestit. Alusta lähtien pyrimme modulaarisesti rakentaa ylös sovelluksemme, `app.py` sisälsi sovelluslogiika, `main.py` sisälsi käyttäjä-interaktioon liittyviä asioita. Sovittiin, että noudataan feature-branch:ien käyttöä, jota otimme noin vakavasti, ettei sallittiin PR:in merge:eä niin pitkään kuin jokin moduuli ei sisältänyt pelkästään sinne kuuluvia osia. CI pipeline rakennettu.
 
@@ -31,7 +35,7 @@ Tärkeämmät edistykset sprintin aikana:
 - User can add entry
 - User can list entries
 
-## Sprint 2
+### Sprint 2
 
 Otettiin käyttöön pylint, tehtiin HELP funktio joka kuvaa komentojen toimintaa käyttäjälle, muotoiltiin asiakasvaatimusten mukaiseksi listauskomennomme tulosteen. Haku- ja poistotoiminnat tulivat implementoiduksi. Tehtiin ensimmäiset kattavammat yksikkötestit ja luopuimme placeholder yksikkötesteista. Robot Framework:in alustavat testit tuli käyttöönotetuksi.
 Tämän jakson aikana törmättiin eri user story:en aikataulutusongelmaan, jossa toinen jäsen teki noin 90% valmiustilaan 1 toiminnan ja joutui odottaa toisen jäsenen tekemän toiminnan valmistumista. Todettiin retrossa, että parikoodaus on hyödyllinen.
@@ -40,7 +44,7 @@ Tärkeämmät kohdat sprintin aikana:
 - User can filter entries
 - User can delete entries
 
-## Sprint 3
+### Sprint 3
 
 Implementoimme DOI importin linkin kautta, sekä export ja import toiminnat. Eristettiin käyttöliittymään liittyvät asiat `ui.py` moduuliin. Estimme identisten title kenttien lisäämistä. Robot testien siivous.
 Tässä sprintissä tehtiin enempää parikoodausta.
@@ -51,11 +55,11 @@ Tärkeämmät kohdat:
 - DOI perusteella import
 - export/import toiminnat
 
-## Sprint 4
+### Sprint 4
 
-WiP 
+Tässä jaksossa tapahtui loppuviimeistely, suurin osa muutoksista koski makuasiat, kuten formatoinnit.
 <!-- täydennetään jälkikäteen, vaikka perjantai illalla -->
 
 Tärkeämmät kohdat:
-- placeholder
-- placeholder
+- Improved author and title formatting
+- User can edit entries
