@@ -17,7 +17,7 @@ User Gets Doi Search Result As A List
     Add Input    n
     Add Input    exit
     Run Application
-    Output Should Contain    Framing the community data system interface
+    Output Should Contain    Framing the community data system interf...
 
 User Can Add Doi Search Result To BiblioGraphy
     Add Input    doi
@@ -26,6 +26,7 @@ User Can Add Doi Search Result To BiblioGraphy
     Add Input    list
     Add Input    exit
     Run Application
-    Output Should Contain    Framing the community data system interface
+    Output Should Contain    Framing the community data system interf...
     Output Should Contain    Entry successfully saved to the database
-    Output Should Contain    Framing the community data system interface
+    Skip Output
+    Output Should Contain    Framing the community data system interf...
