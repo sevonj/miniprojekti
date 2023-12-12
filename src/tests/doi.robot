@@ -37,4 +37,3 @@ User Gets Infomessage If Doi Search Is Unsuccessful
     Add Input    exit
     Run Application
     Output Should Contain    Invalid name format encountered
-
