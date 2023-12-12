@@ -34,10 +34,14 @@ def format_entries(entries: list, fields=None) -> []:
         # No custom field keys given. Return citekey + all fields
         if fields is None:
             entrydict["citekey"] = citekey  # Citekey
-            entrydict["author"] = format_authors(entry.persons.get("author", []))
+            entrydict["author"] = format_authors(
+                entry.persons.get("author", [])
+            )
             for field in entry.fields:  # Get all fields
                 if field.lower() == "title":
-                    entrydict["title"] = limit_str_len(entry.fields.get(field, "N/A"))
+                    entrydict["title"] = limit_str_len(
+                        entry.fields.get(field, "N/A")
+                    )
                     continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
@@ -56,7 +60,9 @@ def format_entries(entries: list, fields=None) -> []:
                     )
                     continue
                 if field.lower() == "title":
-                    entrydict["Title"] = limit_str_len(entry.fields.get(field, "N/A"))
+                    entrydict["Title"] = limit_str_len(
+                        entry.fields.get(field, "N/A")
+                    )
                     continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
@@ -270,9 +276,13 @@ def del_entries(io, app: App):
 def save_entries(io, app: App):
     """UI fn for saving entries to a .bib-file"""
     path = realpath("./bib_export.bib")
-    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    reply = io.input(
+        "Enter file name, e.g. export or export.bib [bib_export.bib] "
+    )
     if reply:
-        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+        path = realpath(
+            f"./{reply if reply.endswith('.bib') else reply +'.bib'}"
+        )
 
     try:
         app.save_to_file(path)
@@ -286,9 +296,13 @@ def load_entries(io, app: App):
 
     path = realpath("./bib_export.bib")
 
-    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    reply = io.input(
+        "Enter file name, e.g. export or export.bib [bib_export.bib] "
+    )
     if reply:
-        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+        path = realpath(
+            f"./{reply if reply.endswith('.bib') else reply +'.bib'}"
+        )
 
     try:
         app.load_from_file(path)
