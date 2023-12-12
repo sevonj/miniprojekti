@@ -17,10 +17,11 @@ DEFAULT_LIMIT = 40
 
 
 def welcome():
-    """Welcome message. This intentionally doesn't use io wrapper."""
-    print(colored("\nM I N I P R O J E K T I", attrs=["bold", "underline"]))
-    print(colored("   Citation Manager", attrs=[]))
-    print(colored(" by ", attrs=[]), end="")
+    """Prints a welcome message"""
+    print("\n ", end="")
+    print(colored("M I N I P R O J E K T I", attrs=["bold", "underline"]))
+    print(colored("    Citation Manager", attrs=[]))
+    print(colored("  by ", attrs=[]), end="")
     print(colored(" Ryhmä4 \n", attrs=["reverse"]))
     print(colored("Type HELP for help."))
 
@@ -330,6 +331,9 @@ def save_entries(io, app: App):
 
 def load_entries(io, app: App):
     """UI fn for loading entries from a .bib-file"""
+
+    if not confirm_unsaved(io, app):
+        return
 
     path = realpath("./bib_export.bib")
 
