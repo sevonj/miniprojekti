@@ -10,7 +10,7 @@ import unittest
 import os.path
 from unittest.mock import patch
 from urllib.error import HTTPError
-from pybtex.database import BibliographyData, Entry, Person
+from pybtex.database import BibliographyData, Entry, Person, InvalidNameString
 from pybtex.utils import OrderedCaseInsensitiveDict
 from app import App
 
@@ -300,3 +300,48 @@ class TestApp(unittest.TestCase):
 
         # Mocked urlopen should raise an HTTPError with 503 status code
         self.assertEqual(bibtex, "\n\tService unavailable.\n")
+
+    def test_parse_entry_from_bibtex(self):
+        # This is a valid BibTeX entry string
+        bibtex_entry = """@article{key,
+                            author={Maksimainen, Ville},
+                            title={Article of Testing},
+                            year={1980},
+                            journal={Journal of Test Articles},
+                            volume={1},
+                            pages={10}}"""
+        success, entry = self.app.parse_entry_from_bibtex(bibtex_entry)
+
+        # parsed entry should be an instance of Entry
+        self.assertIsInstance(entry, Entry)
+
+        # parsed entry should be a success
+        self.assertTrue(success)
+
+        # parsed entry should have correct fields
+        self.assertEqual(entry.fields["title"], "Article of Testing")
+        self.assertEqual(entry.fields["year"], "1980")
+        self.assertEqual(entry.fields["journal"], "Journal of Test Articles")
+        self.assertEqual(entry.fields["volume"], "1")
+        self.assertEqual(entry.fields["pages"], "10")
+
+        # parsed entry should have correct persons
+        self.assertEqual(entry.persons["author"][0].last_names[0], "Maksimainen")
+        self.assertEqual(entry.persons["author"][0].first_names[0], "Ville")
+
+    def test_parse_entry_from_bibtex_with_invalid_bibtex_returns_none(self):
+        # This is an invalid BibTeX entry string
+        bibtex_entry = """@article{key,
+                            author={Maksimainen, Ville, Viinanen, Kimmo},
+                            title={Article of Testing},
+                            year={1980},
+                            journal={Journal of Test Articles},
+                            volume={1},
+                            pages={10}"""
+        success = self.app.parse_entry_from_bibtex(bibtex_entry)[0]
+
+        # unsuccessful parsing raises an exception
+        self.assertRaises(InvalidNameString)
+
+        # unsuccessful parsing returns tuple starting with False
+        self.assertFalse(success)

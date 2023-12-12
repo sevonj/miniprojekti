@@ -171,10 +171,14 @@ class App:
         Args:
             bibtex_entry: A BibTeX entry as a string
         Returns:
-            A pybtex Entry object
+            A tuple of (success, Entry)
+            success: A boolean indicating whether the parsing was successful
+            Entry: Entry or an error message
         """
         try:
             bib_data = parse_string(bibtex_entry, "bibtex")
+
+            # Return the first entry in the BibliographyData object
             return True, list(bib_data.entries.values())[0]
 
         except InvalidNameString as e:
