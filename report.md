@@ -57,7 +57,8 @@ Tärkeämmät kohdat:
 
 ### Sprint 4
 
-Tässä jaksossa tapahtui loppuviimeistely, suurin osa muutoksista koski makuasiat, kuten formatoinnit.
+Tässä jaksossa tapahtui loppuviimeistely, suurin osa muutoksista koski makuasiat, kuten formatoinnit. Tässä sprintissä taas törmättiin aikataulutusongelmaan, joka näkyi siinä, että 2 feature branch sisälsi samat (main haaraan) sulaamattomat sisällöt.
+
 <!-- täydennetään jälkikäteen, vaikka perjantai illalla -->
 
 Tärkeämmät kohdat:
