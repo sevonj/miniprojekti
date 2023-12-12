@@ -8,7 +8,90 @@ from textwrap import dedent
 import re
 from os.path import realpath
 from pybtex.database import Entry, Person, PybtexError
+from tabulate import tabulate
 from app import App
+
+DEFAULT_FIELDS = ["citekey", "author", "title", "journal", "year"]
+DEFAULT_LIMIT = 40
+
+
+def format_entries(entries: list, fields=None) -> list:
+    """Makes entries into a friendlier for further use, such as tabulate.
+
+    Args:
+        entries (list): List of entries
+        fields (list[str]): (optional) (case-insensitive):
+            Choose specific fields for the output. Leave out for `DEFAULT_ENTRIES`.
+            Example: ["idx", "citekey", "Author", "YEAR", "nonexistent-field"]
+
+    Returns:
+        entries (list[dict]): Entries are dicts. Keys are field names and capitalized.
+    """
+    ret_entries = []
+    for idx, (citekey, entry) in enumerate(entries.items()):
+        entrydict = {}
+
+        # No custom field keys given. Return citekey + all fields
+        if fields is None:
+            entrydict["citekey"] = citekey  # Citekey
+            entrydict["author"] = format_authors(entry.persons.get("author", []))
+            for field in entry.fields:  # Get all fields
+                if field.lower() == "title":
+                    entrydict["title"] = limit_str_len(entry.fields.get(field, "N/A"))
+                    continue
+                entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
+
+        # Custom field keys were given. Return whichever fields were asked.
+        else:
+            for field in fields:
+                if field.lower() == "idx":
+                    entrydict["Idx"] = idx
+                    continue
+                if field.lower() == "citekey":
+                    entrydict["Citekey"] = citekey
+                    continue
+                if field.lower() == "author":
+                    entrydict["Author"] = format_authors(
+                        entry.persons.get("author", [])
+                    )
+                    continue
+                if field.lower() == "title":
+                    entrydict["Title"] = limit_str_len(entry.fields.get(field, "N/A"))
+                    continue
+                entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
+
+        ret_entries.append(entrydict)
+
+    return ret_entries
+
+
+def limit_str_len(string: str, limit=DEFAULT_LIMIT) -> str:
+    """Limits the length of a string to a given limit.
+    Args:
+        string (str): The string to be limited
+        limit (int): The limit of the string length
+
+    Returns:
+        str: The limited string
+    """
+    if len(string) > limit:
+        return string[:limit] + "..."
+    return string
+
+
+def format_authors(authors):
+    """
+    Format a list of authors to Author et al if over 3 authors
+    params: list of Person objects
+    Returns: string of formatted authors
+    """
+    if len(authors) > 3:
+        return f"{authors[0]} et al."
+
+    authorstring = f"{authors[0]}"
+    for i in range(1, len(authors)):
+        authorstring += f" and {authors[i]}"
+    return authorstring
 
 
 def print_help(io):
@@ -47,16 +130,20 @@ Available commands (case-insensitive):
 
 def get_entries(io, app: App):
     """UI fn: Print all entries"""
-    # Check if there are any entries and print infomessage is there are none
-    if app.get_entries()[0] is None:
-        io.print(app.get_entries()[1])
+    entries = app.get_entries()[0]
+
+    if entries is None or len(entries) == 0:
+        io.print("No entries found.")
         return
 
-    # Get entries and print tabulated form
-    io.print(app.tabulate_entries(app.get_entries()[0]))
-
-    # Print infomessage when successfully retrieved entries
-    io.print(app.get_entries()[1])
+    io.print("Succesfully retrieved entries:\n")
+    io.print(
+        tabulate(
+            format_entries(entries, DEFAULT_FIELDS),
+            headers="keys",
+        ),
+        "\n",
+    )
 
 
 def add_entry(io, app: App):
@@ -96,7 +183,13 @@ def search_entries(io, app: App):
     """UI fn: Search for an entry"""
     search = io.input("Search: Enter title of the citation: ")
     filtered_entries = app.find_entries_by_title(search)
-    io.print(app.tabulate_entries(filtered_entries))
+    io.print(
+        tabulate(
+            format_entries(filtered_entries, DEFAULT_FIELDS),
+            headers="keys",
+        ),
+        "\n",
+    )
 
 
 re_idx = re.compile(r"\S+")
@@ -113,7 +206,13 @@ def del_entries(io, app: App):
     valid_index_range = range(len(entries))
     indices_to_remove = set()
 
-    io.print(app.tabulate_entries(entries))
+    io.print(
+        tabulate(
+            format_entries(entries, ["idx"] + DEFAULT_FIELDS),
+            headers="keys",
+        ),
+        "\n",
+    )
 
     reply = (
         io.input(
@@ -205,20 +304,30 @@ def search_doi(io, app: App):
     if not doi:
         io.print("DOI is missing, search cancelled.")
         return
-    search_result = app.get_bibtex_by_doi(doi)
-    if search_result.startswith(" @"):
-        entry = app.parse_entry_from_bibtex(search_result)
-        temp_dict = {doi: entry}
-        io.print(app.tabulate_entries(temp_dict))
-        confirm_add = io.input(
-            "Entry successfully retrieved. Would you like to add it to bibliography? y/N:"
-        )
-        if confirm_add.upper().strip() == "Y":
-            app.add_entry(entry)
-            io.print("Entry successfully saved to the database.")
+
+    success, search_result = app.get_bibtex_by_doi(doi)
+
+    if success and search_result.startswith(" @"):
+        success, entry = app.parse_entry_from_bibtex(search_result)
+        if success:
+            io.print(
+                tabulate(
+                    format_entries({doi: entry}, DEFAULT_FIELDS),
+                    headers="keys",
+                ),
+                "\n",
+            )
+            confirm_add = io.input(
+                "\nEntry successfully retrieved. Would you like to add it to bibliography? y/N:"
+            )
+            if confirm_add.upper().strip() == "Y":
+                app.add_entry(entry)
+                io.print("\nEntry successfully saved to the database.\n")
+            else:
+                io.print("\nEntry not added.\n")
+                return
         else:
-            io.print("Entry not added.")
-            return
+            io.print(entry)
     else:
         io.print(search_result)
 

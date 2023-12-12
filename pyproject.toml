@@ -29,9 +29,10 @@ filterwarnings = 'ignore::DeprecationWarning:pybtex.*:'
 source = ['src']
 omit = [
     'src/tests/**',         # We don't unit test our unit tests.
+    'src/ui.py',            # We don't unit test UI code.
     'src/main.py',          # We don't unit test UI code.
     'src/app_io.py',        # We don't unit test IO wrappers.
-    'src/AppLibrary.py',    # We don't unit test this **** either.
+    'src/AppLibrary.py',    # We don't unit test robot tests either.
     ]
 
 [tool.pylint.MAIN]
