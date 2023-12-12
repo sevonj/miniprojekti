@@ -10,6 +10,7 @@ Search Command Can Be Executed
     Add Input    search
     Add Input    art
     Add Input    exit
+    Add Input    y
     Run Application
     Skip Output    2
     Output Should Contain    Testaaja, Teppo
@@ -24,6 +25,7 @@ Search Command Returns correct row
     Add Input    search
     Add Input    B
     Add Input    exit
+    Add Input    y
     Run Application
     Skip Output    6
     Output Should Contain    BBBBBBBB

@@ -20,6 +20,7 @@ class App:
     """
 
     def __init__(self):
+        self.file_changed: bool = False
         self._bib_data: BibliographyData = None  # Currently loaded bibliography
         self._bib_path: str = None  # Filepath of currently loaded biblography
 
@@ -40,14 +41,16 @@ class App:
     def create_bib(self):
         """Load an empty bibliography"""
         self._bib_data = BibliographyData()
+        self.file_changed = False
 
     def load_from_file(self, path: str) -> None:
         """
         Warning: Overwrites loaded bibliography without asking.
         params: Filepath to load
         """
-        self._bib_path = path
         self._bib_data = parse_file(path, "bibtex")
+        self.file_changed = False
+        self._bib_path = path
 
     def save_to_file(self, path: str) -> None:
         """
@@ -55,6 +58,7 @@ class App:
         params: Filepath to save
         """
         self._bib_data.to_file(path)
+        self.file_changed = False
 
     def get_entries(self):
         """Get the entries from the bibliography
@@ -90,6 +94,7 @@ class App:
                     return "Failed to add the entry: Another entry with this title already exists."
 
         self._bib_data.add_entry(key, entry)
+        self.file_changed = True
         return None
 
     def del_entries(self, entry_indices: list[int]):
@@ -107,9 +112,10 @@ class App:
         # deleting specific entries from the `entries` arg
         if len(entry_indices) > 0:
             for idx in entry_indices:
+                self.file_changed = True
                 del self._bib_data.entries[keys[idx]]
             return
-
+        self.file_changed = True
         for key in keys:
             del self._bib_data.entries[key]
 

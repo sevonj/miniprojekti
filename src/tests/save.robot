@@ -20,6 +20,7 @@ User Cannot Save To Path Containing Forbidden Chars
     Add Input    Save
     Add Input    /
     Add Input    exit
+    Add Input    y
     Run Application
     Skip Output    2
     Output Should Contain    Try another file name
@@ -30,6 +31,7 @@ User Cannot Save To Path Containing Non-Existent Dir Structure
     Add Input    Save
     Add Input    folder/folder/folder/asdf.bib
     Add Input    exit
+    Add Input    y
     Run Application
     Skip Output    2
     Output Should Contain    Try another file name

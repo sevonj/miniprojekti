@@ -9,6 +9,7 @@ List Command Can Be Executed
     Add New Entry
     Add Input    list
     Add Input    exit
+    Add Input    y
     Run Application
     Output Should Contain    Enter article citation details
     Output Should Contain    Entry successfully added to the database

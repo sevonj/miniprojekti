@@ -9,6 +9,7 @@ Long List Of Authors Is Formatted When Listed
     Add New Entry With Over 3 Authors
     Add Input    list
     Add Input    exit
+    Add Input    y
     Run Application
     Output Should Contain    Enter article citation details
     Output Should Contain    Entry successfully added to the database
@@ -20,6 +21,7 @@ Three Authors Are Formatted When Listed
     Add New Entry With Three Authors
     Add Input    list
     Add Input    exit
+    Add Input    y
     Run Application
     Output Should Contain    Enter article citation details
     Output Should Contain    Entry successfully added to the database
@@ -32,6 +34,7 @@ Too Long Title Name Is Trimmed When Listed
     Add New Entry With Long Title
     Add Input    list
     Add Input    exit
+    Add Input    y
     Run Application
     Output Should Contain    Enter article citation details
     Output Should Contain    Entry successfully added to the database

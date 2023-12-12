@@ -15,7 +15,17 @@ from ui import (
     save_entries,
     search_doi,
     search_entries,
+    welcome,
+    get_prompt,
+    confirm_unsaved,
 )
+
+WELCOME_MSG = """
+ M I N I P R O J E K T I 
+    Citation Manager
+  by Ryhmä4
+
+Type HELP for help."""
 
 
 def main(io):
@@ -24,13 +34,16 @@ def main(io):
     app = App()
     app.create_bib()
 
+    welcome()
+
     # App loop
     while True:
-        command = io.input("Enter command (type HELP for help):\n> ").upper().strip()
+        command = io.input(get_prompt(app)).upper().strip()
 
         match command:
             case "EXIT":
-                break
+                if confirm_unsaved(io, app):
+                    break
 
             case "HELP":
                 print_help(io)
@@ -55,7 +68,8 @@ def main(io):
 
             case "LOAD":
                 load_entries(io, app)
-
+            case "":
+                pass
             case _:
                 io.print(f"Unrecognized command: '{command}'")
 

@@ -22,6 +22,7 @@ User Can Delete All Entries
     Add Input    y
     Add Input    list
     Add Input    exit
+    Add Input    y
     Run Application
     Skip Output    7
     Output Should Contain    No entries found
@@ -38,6 +39,7 @@ User Can Delete Select Entries
     Add Input    y
     Add Input    list
     Add Input    exit
+    Add Input    y
     Run Application
     Skip Output    8
     Output Should Contain    Testaaja, Teppo
@@ -52,6 +54,7 @@ User Can NOT Delete out-of-bounds Indices
     Add Input    delete
     Add Input    69
     Add Input    exit
+    Add Input    y
     Run Application
     Skip Output    7
     Output Should Contain    ERROR: out-of-bounds index: 69

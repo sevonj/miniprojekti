@@ -6,13 +6,57 @@ This module has the CLI UI functions for the app.
 """
 from textwrap import dedent
 import re
-from os.path import realpath
+from os.path import realpath, basename
 from pybtex.database import Entry, Person, PybtexError
 from tabulate import tabulate
+from termcolor import colored
 from app import App
 
 DEFAULT_FIELDS = ["citekey", "author", "title", "journal", "year"]
 DEFAULT_LIMIT = 40
+
+
+def welcome():
+    """Welcome message. This intentionally doesn't use io wrapper."""
+    print(colored("\nM I N I P R O J E K T I", attrs=["bold", "underline"]))
+    print(colored("   Citation Manager", attrs=[]))
+    print(colored(" by ", attrs=[]), end="")
+    print(colored(" Ryhmä4 \n", attrs=["reverse"]))
+    print(colored("Type HELP for help."))
+
+
+def get_prompt(app: App) -> str:
+    """Constructs a prompt string"""
+    prompt_base = "➜  "
+    prompt_file = ""
+
+    path = app.get_bib_path()
+    changed = app.file_changed
+
+    if path is None and not changed:
+        return prompt_base
+
+    if path is None:
+        prompt_file += "unsaved"
+    else:
+        prompt_file += basename(path)
+    if app.file_changed:
+        prompt_file = "*" + prompt_file
+        prompt_file = colored(prompt_file, attrs=["bold"])
+
+    return prompt_base + prompt_file + " "
+
+
+def confirm_unsaved(io, app: App) -> bool:
+    """Use this for any dangerour operation"""
+    if app.file_changed:
+        confirm = (
+            io.input("You have unsaved changes. Are you sure? [y/N]: ").upper().strip()
+        )
+        if confirm not in {"Y", "YES"}:
+            io.print("Cancelled.")
+            return False
+    return True
 
 
 def format_entries(entries: list, fields=None) -> list:
@@ -34,14 +78,10 @@ def format_entries(entries: list, fields=None) -> list:
         # No custom field keys given. Return citekey + all fields
         if fields is None:
             entrydict["citekey"] = citekey  # Citekey
-            entrydict["author"] = format_authors(
-                entry.persons.get("author", [])
-            )
+            entrydict["author"] = format_authors(entry.persons.get("author", []))
             for field in entry.fields:  # Get all fields
                 if field.lower() == "title":
-                    entrydict["title"] = limit_str_len(
-                        entry.fields.get(field, "N/A")
-                    )
+                    entrydict["title"] = limit_str_len(entry.fields.get(field, "N/A"))
                     continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
@@ -60,9 +100,7 @@ def format_entries(entries: list, fields=None) -> list:
                     )
                     continue
                 if field.lower() == "title":
-                    entrydict["Title"] = limit_str_len(
-                        entry.fields.get(field, "N/A")
-                    )
+                    entrydict["Title"] = limit_str_len(entry.fields.get(field, "N/A"))
                     continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
@@ -102,11 +140,11 @@ def format_authors(authors):
 
 def print_help(io):
     """UI fn: Help"""
-    msg = """M I N I P R O J E K T I
-by Ryhmä4
-
+    msg = colored(
+        """
 Available commands (case-insensitive):
 """
+    )
 
     # Dic of commands. Key is the command itself and the value is the description.
     commands = {
@@ -128,7 +166,9 @@ Available commands (case-insensitive):
     maxkeylen = max(len(key) for key in keys)
 
     for key in keys:
-        msg += key.ljust(maxkeylen + 2) + " - " + commands[key] + "\n"
+        msg += (
+            colored(key.ljust(maxkeylen), attrs=["bold"]) + " - " + commands[key] + "\n"
+        )
 
     io.print(msg)
 
@@ -276,19 +316,16 @@ def del_entries(io, app: App):
 def save_entries(io, app: App):
     """UI fn for saving entries to a .bib-file"""
     path = realpath("./bib_export.bib")
-    reply = io.input(
-        "Enter file name, e.g. export or export.bib [bib_export.bib] "
-    )
+    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(
-            f"./{reply if reply.endswith('.bib') else reply +'.bib'}"
-        )
+        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.save_to_file(path)
         io.print(f"Saved to {path}")
+        app.set_bib_path(path)
     except PybtexError:
-        io.print("\n\tSaving file failed. Try another file name\n")
+        io.print("\n\tSaving file failed. Try another file name.")
 
 
 def load_entries(io, app: App):
@@ -296,19 +333,15 @@ def load_entries(io, app: App):
 
     path = realpath("./bib_export.bib")
 
-    reply = io.input(
-        "Enter file name, e.g. export or export.bib [bib_export.bib] "
-    )
+    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(
-            f"./{reply if reply.endswith('.bib') else reply +'.bib'}"
-        )
+        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.load_from_file(path)
-        io.print(f"Loaded from {path}")
+        io.print(f"Loaded from {path}.")
     except PybtexError:
-        io.print("\n\tLoading file failed. Try another file name\n")
+        io.print("\n\tLoading file failed. Try another file name.")
 
 
 def search_doi(io, app: App):

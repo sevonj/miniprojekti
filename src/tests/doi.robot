@@ -25,6 +25,7 @@ User Can Add Doi Search Result To BiblioGraphy
     Add Input    y
     Add Input    list
     Add Input    exit
+    Add Input    y
     Run Application
     Output Should Contain    Framing the community data system interf...
     Output Should Contain    Entry successfully saved to the database
