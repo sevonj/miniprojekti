@@ -34,14 +34,10 @@ def format_entries(entries: list, fields=None) -> list:
         # No custom field keys given. Return citekey + all fields
         if fields is None:
             entrydict["citekey"] = citekey  # Citekey
-            entrydict["author"] = format_authors(
-                entry.persons.get("author", [])
-            )
+            entrydict["author"] = format_authors(entry.persons.get("author", []))
             for field in entry.fields:  # Get all fields
                 if field.lower() == "title":
-                    entrydict["title"] = limit_str_len(
-                        entry.fields.get(field, "N/A")
-                    )
+                    entrydict["title"] = limit_str_len(entry.fields.get(field, "N/A"))
                     continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
@@ -60,9 +56,7 @@ def format_entries(entries: list, fields=None) -> list:
                     )
                     continue
                 if field.lower() == "title":
-                    entrydict["Title"] = limit_str_len(
-                        entry.fields.get(field, "N/A")
-                    )
+                    entrydict["Title"] = limit_str_len(entry.fields.get(field, "N/A"))
                     continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
@@ -276,13 +270,9 @@ def del_entries(io, app: App):
 def save_entries(io, app: App):
     """UI fn for saving entries to a .bib-file"""
     path = realpath("./bib_export.bib")
-    reply = io.input(
-        "Enter file name, e.g. export or export.bib [bib_export.bib] "
-    )
+    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(
-            f"./{reply if reply.endswith('.bib') else reply +'.bib'}"
-        )
+        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.save_to_file(path)
@@ -296,13 +286,9 @@ def load_entries(io, app: App):
 
     path = realpath("./bib_export.bib")
 
-    reply = io.input(
-        "Enter file name, e.g. export or export.bib [bib_export.bib] "
-    )
+    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(
-            f"./{reply if reply.endswith('.bib') else reply +'.bib'}"
-        )
+        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.load_from_file(path)
@@ -317,25 +303,30 @@ def search_doi(io, app: App):
     if not doi:
         io.print("DOI is missing, search cancelled.")
         return
-    search_result = app.get_bibtex_by_doi(doi)
-    if search_result.startswith(" @"):
-        entry = app.parse_entry_from_bibtex(search_result)
-        citekey = app.generate_citekey(entry)
+
+    success, search_result = app.get_bibtex_by_doi(doi)
+
+    if success and search_result.startswith(" @"):
+        success, entry = app.parse_entry_from_bibtex(search_result)
+        if success:
+            citekey = app.generate_citekey(entry)
         io.print(
-            tabulate(
-                format_entries({citekey: entry}, DEFAULT_FIELDS),
-                headers="keys",
-            ),
-            "\n",
-        )
-        confirm_add = io.input(
-            "Entry successfully retrieved. Would you like to add it to bibliography? y/N:"
-        )
-        if confirm_add.upper().strip() == "Y":
-            app.add_entry(entry)
-            io.print("Entry successfully saved to the database.")
+                tabulate(
+                    format_entries({citekey: entry}, DEFAULT_FIELDS),
+                    headers="keys",
+                ),
+                "\n",
+            )
+            confirm_add = io.input(
+                "\nEntry successfully retrieved. Would you like to add it to bibliography? y/N:"
+            )
+            if confirm_add.upper().strip() == "Y":
+                app.add_entry(entry)
+                io.print("\nEntry successfully saved to the database.\n")
+            else:
+                io.print("\nEntry not added.\n")
+                return
         else:
-            io.print("Entry not added.")
-            return
+            io.print(entry)
     else:
         io.print(search_result)
