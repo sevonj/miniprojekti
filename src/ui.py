@@ -310,7 +310,7 @@ def search_doi(io, app: App):
         success, entry = app.parse_entry_from_bibtex(search_result)
         if success:
             citekey = app.generate_citekey(entry)
-        io.print(
+            io.print(
                 tabulate(
                     format_entries({citekey: entry}, DEFAULT_FIELDS),
                     headers="keys",

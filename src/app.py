@@ -5,7 +5,6 @@ This module contains the service which the UI code can call.
 It should be kept UI-independent; No UI code here.
 
 """
-from uuid import uuid4
 import string
 import urllib.request
 from urllib.error import HTTPError
