@@ -221,3 +221,20 @@ class App:
             entry.fields[field_to_edit.lower()] = edited_value
             return True
         return False
+    
+    def find_entries_by_citekey(self, searched):
+        """Find an entry where the searched word is the citekey.
+        Args:
+            searched: A string, the citekey of the searched entry
+        Returns:
+            A pybtex Entry object if found, else None
+        """
+
+        if self.get_entries()[0] is None:
+            return None
+
+        for citekey, entry in self.get_entries()[0].items():
+            if citekey.lower() == searched.lower():
+                return entry
+
+        return None
