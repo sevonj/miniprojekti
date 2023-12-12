@@ -331,20 +331,6 @@ def search_doi(io, app: App):
     else:
         io.print(search_result)
 
-def format_authors(authors):
-    """
-    Format a list of authors to Author et al if over 3 authors
-    params: list of Person objects
-    Returns: string of formatted authors
-    """
-    if len(authors) > 3:
-        return f"{authors[0]} et al."
-
-    authorstring = f"{authors[0]}"
-    for i in range(1, len(authors)):
-        authorstring += f" and {authors[i]}"
-    return authorstring
-
 
 def edit_entry(io, app: App):
     """UI fn for editing entries"""
@@ -352,11 +338,11 @@ def edit_entry(io, app: App):
     if not entries:
         io.print("There are no entries to edit.")
         return
-    citeKey = io.input("Input the Citekey for the Entry you would like to edit: ")
-    if not citeKey:
+    citekey = io.input("Input the Citekey for the Entry you would like to edit: ")
+    if not citekey:
         io.print("Citekey is missing, search cancelled.")
         return
-    entry_to_edit = app.find_entries_by_citekey(citeKey)
+    entry_to_edit = app.find_entries_by_citekey(citekey)
     if not entry_to_edit:
         io.print("No matching entry was found with the given Citekey.")
         return
@@ -364,17 +350,7 @@ def edit_entry(io, app: App):
         """Input the field that want to edit in the entry
                         (author, title, journal, year, volume, number, pages): """
     ).lower()
-    if field_to_edit not in [
-        "author",
-        "title",
-        "journal",
-        "year",
-        "volume",
-        "number",
-        "pages",
-    ]:
-        io.print("Field either does not exist or it cannot be edited.")
-        return
+
     if field_to_edit == "author":
         io.print(format_authors(entry_to_edit.persons.get("author")))
     else:
@@ -382,7 +358,7 @@ def edit_entry(io, app: App):
 
     edited_field_value = io.input("Input the edition you want: ")
 
-    success = app.edit_entry(citeKey, field_to_edit, edited_field_value)
+    success = app.edit_entry(citekey, field_to_edit, edited_field_value)
     if success:
         io.print("Entry edited successfully!")
     else:

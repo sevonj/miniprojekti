@@ -321,7 +321,7 @@ class TestApp(unittest.TestCase):
         edited_entry = self.app._bib_data.entries[citekey]
         edited_title_name = edited_entry.fields["title"]
         self.assertEqual(edited_title_name, new_author_name)
-    
+
     def test_edit_entries_others_wrong(self):
         entry = Entry(
             "article",
@@ -347,7 +347,6 @@ class TestApp(unittest.TestCase):
 
         # Assert that the edit was unsuccessful
         self.assertFalse(result)
-
 
     def test_valid_doi_returns_bibtex(self):
         # This is a valid DOI

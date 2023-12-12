@@ -14,7 +14,7 @@ from pybtex.database import (
     parse_string,
     parse_file,
     InvalidNameString,
-    Person
+    Person,
 )
 
 BASE_DOI_URL = "http://dx.doi.org/"
@@ -199,22 +199,20 @@ class App:
             citekey: A string, the citekey of the entry to be edited
             field_to_edit: A string, the field to be edited
             edited_value: A string, the new value for the field
+
         Returns:
             True if the entry was edited successfully, False otherwise
         """
-
         if field_to_edit not in [
-        "author",
-        "title",
-        "journal",
-        "year",
-        "volume",
-        "number",
-        "pages",
+            "author",
+            "title",
+            "journal",
+            "year",
+            "volume",
+            "number",
+            "pages",
         ]:
-        
             return False
-
         if citekey in self._bib_data.entries:
             entry = self._bib_data.entries[citekey]
             if field_to_edit == "author":
@@ -222,5 +220,4 @@ class App:
                 return True
             entry.fields[field_to_edit.lower()] = edited_value
             return True
-        else:
-            return False
+        return False
