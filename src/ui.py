@@ -15,18 +15,17 @@ DEFAULT_FIELDS = ["citekey", "author", "title", "journal", "year"]
 DEFAULT_LIMIT = 40
 
 
-def format_entries(entries: [], fields=None) -> []:
-    """
-    Makes entries into a friendlier for further use, such as tabulate.
-    params:
-        entries:
-            List of entries
-        fields: (optional) (case-insensitive):
-            Choose specific fields for the output. Leave out for default.
+def format_entries(entries: list, fields=None) -> []:
+    """Makes entries into a friendlier for further use, such as tabulate.
+
+    Args:
+        entries (list): List of entries
+        fields (list[str]): (optional) (case-insensitive):
+            Choose specific fields for the output. Leave out for `DEFAULT_ENTRIES`.
             Example: ["idx", "citekey", "Author", "YEAR", "nonexistent-field"]
-    return:
-        entries: [{}]
-            Entries are dicts. Keys are field names and capitalized.
+
+    Returns:
+        entries (list[dict]): Entries are dicts. Keys are field names and capitalized.
     """
     ret_entries = []
     for idx, (citekey, entry) in enumerate(entries.items()):
