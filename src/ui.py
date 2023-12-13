@@ -9,7 +9,7 @@ import re
 from os.path import realpath
 from pybtex.database import Entry, Person, PybtexError
 from tabulate import tabulate
-from app import App
+from app import App, FIELDS_TO_PROMPT
 
 DEFAULT_FIELDS = ["citekey", "author", "title", "journal", "year"]
 DEFAULT_LIMIT = 40
@@ -34,10 +34,12 @@ def format_entries(entries: list, fields=None) -> list:
         # No custom field keys given. Return citekey + all fields
         if fields is None:
             entrydict["citekey"] = citekey  # Citekey
-            entrydict["author"] = format_authors(entry.persons.get("author", []))
+            entrydict["author"] = format_authors(
+                entry.persons.get("author", []))
             for field in entry.fields:  # Get all fields
                 if field.lower() == "title":
-                    entrydict["title"] = limit_str_len(entry.fields.get(field, "N/A"))
+                    entrydict["title"] = limit_str_len(
+                        entry.fields.get(field, "N/A"))
                     continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
@@ -56,7 +58,8 @@ def format_entries(entries: list, fields=None) -> list:
                     )
                     continue
                 if field.lower() == "title":
-                    entrydict["Title"] = limit_str_len(entry.fields.get(field, "N/A"))
+                    entrydict["Title"] = limit_str_len(
+                        entry.fields.get(field, "N/A"))
                     continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
@@ -113,6 +116,7 @@ Available commands (case-insensitive):
         "SEARCH": "Search for an entry by title",
         "SAVE": "Save entries to a .bib-file. Overwrites data",
         "LOAD": "Loads entries from a .bib-file",
+        "EDIT": "Edits a specific field of a specific entry",
     }
 
     # Force alphabetical order
@@ -148,26 +152,31 @@ def get_entries(io, app: App):
 def add_entry(io, app: App):
     """UI fn: Add a new entry"""
     io.print("Enter article citation details:")
-    author = io.input("Author: ")
-    title = io.input("Title: ")
-    journal = io.input("Journal: ")
-    year = io.input("Year: ")
-    volume = io.input("Volume: ")
-    number = io.input("Number: ")
-    pages = io.input("Pages: ")
+
+    authors = ""
+    fields = {}
+    for field in FIELDS_TO_PROMPT:
+        prompt = field.capitalize() + ": "
+        value = io.input(prompt)
+
+        # Force required
+        if field in {"author", "title"}:
+            while value == "":
+                value = io.input("This field is required!\n" + prompt)
+
+        # Author isn't a normal field
+        if field == "author":
+            authors = value
+            continue
+
+        if value != "":
+            fields[field] = value
 
     # Create an Entry object representing the article citation
     entry = Entry(
         "article",
-        persons={"author": [Person(name) for name in author.split(" and ")]},
-        fields={
-            "title": title,
-            "journal": journal,
-            "year": year,
-            "volume": volume,
-            "number": number,
-            "pages": pages,
-        },
+        persons={"author": [Person(name) for name in authors.split(" and ")]},
+        fields=fields,
     )
 
     # Add the entry to the Bibliography
@@ -216,12 +225,12 @@ def del_entries(io, app: App):
     reply = (
         io.input(
             dedent(
-                """
-        Which entries do you want to remove? Type either:
-        - indeces separated by whitespace, e.g. '0 1 5'
-        - or the word 'ALL' to remove all entries:
+                """\
+                Which entries do you want to remove? Type either:
+                - indeces separated by whitespace, e.g. '0 1 5'
+                - or the word 'ALL' to remove all entries:
 
-        [none]: """
+                [none]: """
             )
         )
         .upper()
@@ -270,9 +279,11 @@ def del_entries(io, app: App):
 def save_entries(io, app: App):
     """UI fn for saving entries to a .bib-file"""
     path = realpath("./bib_export.bib")
-    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    reply = io.input(
+        "Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+        path = realpath(
+            f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.save_to_file(path)
@@ -286,9 +297,11 @@ def load_entries(io, app: App):
 
     path = realpath("./bib_export.bib")
 
-    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    reply = io.input(
+        "Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+        path = realpath(
+            f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.load_from_file(path)
@@ -330,3 +343,39 @@ def search_doi(io, app: App):
             io.print(entry)
     else:
         io.print(search_result)
+
+
+def edit_entry(io, app: App):
+    """UI fn for editing entries"""
+    entries = app.get_entries()[0]
+    if not entries:
+        io.print("There are no entries to edit.")
+        return
+    citekey = io.input(
+        "Input the Citekey for the Entry you would like to edit: ")
+    if not citekey:
+        io.print("Citekey is missing, search cancelled.")
+        return
+    entry_to_edit = app.find_entries_by_citekey(citekey)
+    if not entry_to_edit:
+        io.print("No matching entry was found with the given Citekey.")
+        return
+
+    allowed_fields = "author,title,journal,year,volume,pages".split(",")
+    field_to_edit = io.input(dedent(
+        f"""\
+        Input the field that want to edit in the entry
+        ({', '.join(allowed_fields)}): """
+    )).lower()
+
+    if field_to_edit.lower() not in allowed_fields:
+        io.print(f"Unrecognized field: <{field_to_edit}>")
+        return
+
+    edited_field_value = io.input("Input the edition you want: ")
+
+    success = app.edit_entry(citekey, field_to_edit, edited_field_value)
+    if success[1]:
+        io.print(success[0])
+    else:
+        io.print(success[0])
