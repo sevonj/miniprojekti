@@ -317,24 +317,29 @@ def search_doi(io, app: App):
     if not doi:
         io.print("DOI is missing, search cancelled.")
         return
-    search_result = app.get_bibtex_by_doi(doi)
-    if search_result.startswith(" @"):
-        entry = app.parse_entry_from_bibtex(search_result)
-        io.print(
-            tabulate(
-                format_entries({doi: entry}, DEFAULT_FIELDS),
-                headers="keys",
-            ),
-            "\n",
-        )
-        confirm_add = io.input(
-            "Entry successfully retrieved. Would you like to add it to bibliography? y/N:"
-        )
-        if confirm_add.upper().strip() == "Y":
-            app.add_entry(entry)
-            io.print("Entry successfully saved to the database.")
+
+    success, search_result = app.get_bibtex_by_doi(doi)
+
+    if success and search_result.startswith(" @"):
+        success, entry = app.parse_entry_from_bibtex(search_result)
+        if success:
+            io.print(
+                tabulate(
+                    format_entries({doi: entry}, DEFAULT_FIELDS),
+                    headers="keys",
+                ),
+                "\n",
+            )
+            confirm_add = io.input(
+                "\nEntry successfully retrieved. Would you like to add it to bibliography? y/N:"
+            )
+            if confirm_add.upper().strip() == "Y":
+                app.add_entry(entry)
+                io.print("\nEntry successfully saved to the database.\n")
+            else:
+                io.print("\nEntry not added.\n")
+                return
         else:
-            io.print("Entry not added.")
-            return
+            io.print(entry)
     else:
         io.print(search_result)
