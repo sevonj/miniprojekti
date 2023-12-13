@@ -109,11 +109,10 @@ class App:
         """
 
         # Get first author's last name
-        author = (
-            entry.persons.get("author")[0].last_names[0]
-            if entry.persons.get("author")
-            else "N/A"
-        )
+        author = "N/A"
+        authors = entry.persons.get("author")
+        if authors and len(authors) > 0 and len(authors[0].last_names) > 0:
+            author = authors[0].last_names[0]
 
         # Get year
         year = entry.fields.get("year", "N/A")
