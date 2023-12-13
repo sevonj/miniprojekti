@@ -14,6 +14,7 @@ from pybtex.database import (
     parse_string,
     parse_file,
     InvalidNameString,
+    Person,
 )
 
 BASE_DOI_URL = "http://dx.doi.org/"
@@ -222,3 +223,57 @@ class App:
 
         except Exception as e:  # pylint: disable=broad-except
             return False, f"\n\tAn error occured while parsing the BibTex entry: {e}\n"
+
+    def edit_entry(self, citekey, field_to_edit, edited_value):
+        """Edit an entry's field.
+
+        Args:
+            citekey: A string, the citekey of the entry to be edited
+            field_to_edit: A string, the field to be edited
+            edited_value: A string, the new value for the field
+
+        Returns:
+            True if the entry was edited successfully, False otherwise
+        """
+        if field_to_edit not in [
+            "author",
+            "title",
+            "journal",
+            "year",
+            "volume",
+            "number",
+            "pages",
+        ]:
+            return False
+
+        if field_to_edit in ["author","title"]:
+            if len(edited_value) == 0:
+                return ("Title or Author must contain something", None)
+
+        if citekey in self._bib_data.entries:
+            entry = self._bib_data.entries[citekey]
+            if field_to_edit == "author":
+                entry.persons["author"] = [
+                    Person(name) for name in edited_value.split(" and ")
+                ]
+                return ("Edition Successful", True)
+            entry.fields[field_to_edit.lower()] = edited_value
+            return ("Edition Successful", True)
+        return ("Invalid Citekey", False)
+
+    def find_entries_by_citekey(self, searched):
+        """Find an entry where the searched word is the citekey.
+        Args:
+            searched: A string, the citekey of the searched entry
+        Returns:
+            A pybtex Entry object if found, else None
+        """
+
+        if self.get_entries()[0] is None:
+            return None
+
+        for citekey, entry in self.get_entries()[0].items():
+            if citekey.lower() == searched.lower():
+                return entry
+
+        return None

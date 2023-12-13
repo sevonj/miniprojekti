@@ -262,6 +262,73 @@ class TestApp(unittest.TestCase):
         filtered_entries = self.app.find_entries_by_title("title")
         self.assertEqual(len(filtered_entries), 3)
 
+    def test_edit_entries(self):
+        entry = Entry(
+            "article",
+            fields={
+                "author": "Test_Author",
+                "title": "Test_Title",
+                "journal": "Test_Journal",
+                "year": "Test_Year",
+                "volume": "Test_Volume",
+                "number": "Test_Number",
+                "pages": "Test_Pages",
+            },
+        )
+
+        self.app.add_entry(entry)
+        keys = []
+        for citekey, entry in self.app.get_entries()[0].items():
+            keys.append(citekey)
+        citekey = keys[-1]
+        new_author_name = "New_Name"
+        result = self.app.edit_entry(citekey, "author", new_author_name)
+
+        # Assert that the edit was successful
+        self.assertTrue(result)
+
+        # Retrieve the edited entry and verify the changes
+        edited_entry = self.app._bib_data.entries[citekey]
+        edited_author_name = edited_entry.persons["author"][0].last_names[0]
+        self.assertEqual(edited_author_name, new_author_name)
+
+        new_title = "New_Title"
+        result = self.app.edit_entry(citekey, "title", new_title)
+
+        # Assert that the edit was successful
+        self.assertTrue(result)
+
+        # Retrieve the edited entry and verify the changes
+        edited_entry = self.app._bib_data.entries[citekey]
+        edited_title_name = edited_entry.fields["title"]
+        self.assertEqual(edited_title_name, new_title)
+
+    def test_edit_entries_others_wrong(self):
+        entry = Entry(
+            "article",
+            fields={
+                "author": "Test_Author",
+                "title": "Test_Title",
+                "journal": "Test_Journal",
+                "year": "Test_Year",
+                "volume": "Test_Volume",
+                "number": "Test_Number",
+                "pages": "Test_Pages",
+            },
+        )
+
+        self.app.add_entry(entry)
+        keys = []
+        for citekey, entry in self.app.get_entries()[0].items():
+            keys.append(citekey)
+        citekey = keys[-1]
+        # Trying to edit a field that shouldn't be changed
+        new_issn = "1340-0218"
+        result = self.app.edit_entry(citekey, "issn", new_issn)
+
+        # Assert that the edit was unsuccessful
+        self.assertFalse(result)
+
     def test_valid_doi_returns_bibtex(self):
         # This is a valid DOI
         doi = "10.1145/2783446.2783605"
