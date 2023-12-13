@@ -18,6 +18,12 @@ from pybtex.database import (
 
 BASE_DOI_URL = "http://dx.doi.org/"
 
+class TitleAlreadyExists(Exception):
+    """Is raised when a title already
+    exists in the database
+    """
+    def __str__(self):
+        return "Failed to add the entry: Another entry with this title already exists."
 
 class App:
     """
@@ -78,14 +84,22 @@ class App:
         except Exception as e:  # pylint: disable=broad-except
             return None, f"Failed to retrieve entries: {e}"
 
-    def add_entry(self, entry: Entry) -> None | str:
-        """
+    def add_entry(self, entry: Entry):
+        """Validate entry and if successful
+        add to the bibliography.
+
         params:
             entry: this will be added
-        return:
-            Error message: None | str
         """
         key = self.generate_citekey(entry)
+
+        self._validate_entry(entry)
+        self._bib_data.add_entry(key, entry)
+
+    def _validate_entry(self, entry):
+        """Validates entry before being
+        added to the database.
+        """
         entries = self._bib_data.entries
         title = entry.fields.get("title")
 
@@ -93,10 +107,7 @@ class App:
             for _citekey, existing_entry in entries.items():
                 existing_title = existing_entry.fields.get("title")
                 if existing_title.lower() == title.lower():
-                    return "Failed to add the entry: Another entry with this title already exists."
-
-        self._bib_data.add_entry(key, entry)
-        return None
+                    raise TitleAlreadyExists
 
     def generate_citekey(self, entry: Entry) -> str:
         """Generate an unique citekey for an entry
