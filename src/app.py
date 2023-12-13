@@ -213,6 +213,7 @@ class App:
             "pages",
         ]:
             return False
+        
         if citekey in self._bib_data.entries:
             entry = self._bib_data.entries[citekey]
             if field_to_edit == "author":

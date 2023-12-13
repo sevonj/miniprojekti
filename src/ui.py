@@ -351,15 +351,10 @@ def edit_entry(io, app: App):
                         (author, title, journal, year, volume, number, pages): """
     ).lower()
 
-    if field_to_edit == "author":
-        io.print(format_authors(entry_to_edit.persons.get("author")))
-    else:
-        io.print(entry_to_edit.fields[field_to_edit])
-
     edited_field_value = io.input("Input the edition you want: ")
 
     success = app.edit_entry(citekey, field_to_edit, edited_field_value)
     if success:
         io.print("Entry edited successfully!")
     else:
-        io.print("Entry with the provided citekey was not found.")
+        io.print("Invalid Field or Entry with the provided citekey was not found.")
