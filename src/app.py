@@ -249,7 +249,9 @@ class App:
         if citekey in self._bib_data.entries:
             entry = self._bib_data.entries[citekey]
             if field_to_edit == "author":
-                entry.persons["author"] = [Person(edited_value)]
+                entry.persons["author"] = [
+                    Person(name) for name in edited_value.split(" and ")
+                ]
                 return True
             entry.fields[field_to_edit.lower()] = edited_value
             return True
