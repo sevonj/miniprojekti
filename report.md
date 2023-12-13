@@ -1,11 +1,11 @@
 # Raportti
 
 Ryhmän kaikki jäsenet ovat antaneet vertaispalautetta [täältä](https://study.cs.helsinki.fi/stats/courses/ohtu2023/miniproject) ("Create peer review" napin takaa) **viimeistään perjantaina 22.12. klo 23:59**
-    - [ ] Juho Paananen
-    - [ ] Julius Sevon
-    - [ ] Miina Saromaa
-    - [ ] Mudar Algayal
-    - [X] Tamás Tóth
+- [ ] Juho Paananen
+- [ ] Julius Sevon
+- [ ] Miina Saromaa
+- [ ] Mudar Algayal
+- [X] Tamás Tóth
 
 "Ryhmä4" nimellä perustettiin ryhmämme. Sovelluksemme on yksinkertainen komentorivi-sovellus jonka avulla pystyy luoda/tuoda/viedä bibliograafisia viitteitä `LaTeX` muodaossa (`*.bib` laajennuksella). Taustalla hyödynnetään muutamaa kirjastoa, kuten `pybtex`, täyttä kuvaa saa riippuvuuksiamme [täältä](./pyproject.toml).
 
