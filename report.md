@@ -1,13 +1,13 @@
 # Raportti
 
-- ryhmän kaikki jäsenet ovat antaneet vertaispalautetta [täältä](https://study.cs.helsinki.fi/stats/courses/ohtu2023/miniproject) ("Create peer review" napin takaa) **viimeistään perjantaina 22.12. klo 23:59**
+Ryhmän kaikki jäsenet ovat antaneet vertaispalautetta [täältä](https://study.cs.helsinki.fi/stats/courses/ohtu2023/miniproject) ("Create peer review" napin takaa) **viimeistään perjantaina 22.12. klo 23:59**
     - [ ] Juho Paananen
     - [ ] Julius Sevon
     - [ ] Miina Saromaa
     - [ ] Mudar Algayal
     - [X] Tamás Tóth
 
-"Ryhmä4" nimellä perustettiin ryhmämme. Sovelluksemme on yksinkertainen komentorivi-sovellus jonka avulla pystyy luoda/tuoda/viedä bibliograafisia viitteitä `LaTeX` muodaossa. Taustalla käytetään muutamaa 3rd-party kirjastoa, kuten `pybtex` ja `tabulate`, loput riippuvuuksiamme näkyy [täältä](./pyproject.toml).
+"Ryhmä4" nimellä perustettiin ryhmämme. Sovelluksemme on yksinkertainen komentorivi-sovellus jonka avulla pystyy luoda/tuoda/viedä bibliograafisia viitteitä `LaTeX` muodaossa (`*.bib` laajennuksella). Taustalla hyödynnetään muutamaa kirjastoa, kuten `pybtex`, täyttä kuvaa saa riippuvuuksiamme [täältä](./pyproject.toml).
 
 ## Mikä sujui projektissa hyvin, mitä pitäisi parantaa seuraavaa kertaa varten
 
@@ -57,7 +57,7 @@ Tärkeämmät kohdat:
 
 ### Sprint 4
 
-Tässä jaksossa tapahtui loppuviimeistely, suurin osa muutoksista koski makuasiat, kuten formatoinnit. Tässä sprintissä taas törmättiin aikataulutusongelmaan, joka näkyi siinä, että 2 feature branch sisälsi samat (main haaraan) sulaamattomat sisällöt.
+Tässä jaksossa tapahtui loppuviimeistely, suurin osa muutoksista koski makuasiat, kuten formatoinnit ja sovelluksen yksityiskohtien hienosäädelyt. Törmättiin uudeelleen aikataulutusongelmaan, joka näkyi siinä, että 2 feature branch sisälsi samat (main haaraan) sulaamattomat commitit.
 
 <!-- täydennetään jälkikäteen, vaikka perjantai illalla -->
 
