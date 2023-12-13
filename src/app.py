@@ -222,6 +222,7 @@ class App:
             return True
         return False
 
+    # Add function for citekey search
     def find_entries_by_citekey(self, searched):
         """Find an entry where the searched word is the citekey.
         Args:
