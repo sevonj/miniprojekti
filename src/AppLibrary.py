@@ -1,7 +1,9 @@
 """ Library for Robot Framework tests"""
-# pylint: disable=invalid-name
+# pylint: skip-file
+from app import App
 from app_io import StubIO
 from main import main
+from pybtex.database import Entry, Person
 
 
 class AppLibrary:
@@ -9,6 +11,7 @@ class AppLibrary:
 
     def __init__(self):
         self._io = StubIO()
+        self._app = App()
 
     def add_input(self, value):
         """Add an input string to the queue"""
@@ -32,4 +35,13 @@ class AppLibrary:
 
     def run_application(self):
         """Run the app with predetermined inputs."""
-        main(self._io)
+        main(self._io, self._app)
+
+    def add_entry(self, citekey: str, author: str, fields: dict):
+        """Manual entry add for testing"""
+        entry = Entry(
+            "article",
+            persons={"author": [Person(name) for name in author.split(" and ")]},
+            fields=fields,
+        )
+        self._app._bib_data.entries[citekey] = entry

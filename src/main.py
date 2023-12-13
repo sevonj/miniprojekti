@@ -19,10 +19,9 @@ from ui import (
 )
 
 
-def main(io):
+def main(io, app=App()):
     """The command loop"""
 
-    app = App()
     app.create_bib()
 
     # App loop
