@@ -221,7 +221,7 @@ class App:
             entry.fields[field_to_edit.lower()] = edited_value
             return True
         return False
-    
+
     def find_entries_by_citekey(self, searched):
         """Find an entry where the searched word is the citekey.
         Args:
