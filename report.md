@@ -1,23 +1,23 @@
 # Raportti
 
 Ryhmän kaikki jäsenet ovat antaneet vertaispalautetta [täältä](https://study.cs.helsinki.fi/stats/courses/ohtu2023/miniproject) ("Create peer review" napin takaa) **viimeistään perjantaina 22.12. klo 23:59**
-- [ ] Juho Paananen
+- [X] Juho Paananen
 - [ ] Julius Sevon
 - [ ] Miina Saromaa
 - [ ] Mudar Algayal
 - [X] Tamás Tóth
 
-"Ryhmä4" nimellä perustettiin ryhmämme. Sovelluksemme on yksinkertainen komentorivi-sovellus jonka avulla pystyy luoda/tuoda/viedä bibliograafisia viitteitä `LaTeX` muodaossa (`*.bib` laajennuksella). Taustalla hyödynnetään muutamaa kirjastoa, kuten `pybtex`, täyttä kuvaa saa riippuvuuksiamme [täältä](./pyproject.toml).
+"Ryhmämme nimettiin dynaamisesti "Ryhmä4". Sovelluksemme on yksinkertainen komentorivi-sovellus jonka avulla pystyy luoda/tuoda/viedä bibliograafisia viitteitä `LaTeX` muodossa (`*.bib` laajennuksella). Taustalla hyödynnetään muutamaa kirjastoa, kuten `pybtex`. Täyden kuvan riippuvuuksistamme saa [täältä](./pyproject.toml).
 
 ## Mikä sujui projektissa hyvin, mitä pitäisi parantaa seuraavaa kertaa varten
 
-Kun toi "Assembler" hajosi alussa, turhaan meni aikaa manual aikatauluttamiseen satunnaisesti arvottujen ryhmäjäsenten kanssa.
+Kun toi "Assembler" hajosi alussa, turhaan meni aikaa manuaaliseen aikatauluttamiseen satunnaisesti arvottujen ryhmäjäsenten kanssa. Tämä aiheutti melkoisesti päänvaivaa projektin sujuvan etenemisen takaamiseksi.
 
 ## Mitä asioita opitte, mitä asioita olisitte halunneet oppia, mikä tuntui turhalta
 
-Opimme Taigan, feautre branch:ien käytön, sekä parikoodaamisen arvoa.
+Opimme Taigan, feature branch:ien käytön, sekä parikoodaamisen arvoa.
 
-Tuntui vähän ikävältä parikoodamisen yhteisten kommittien säätäminen, joten luovutettiin ideasta ja jakeltiin mieluummin USER STORY:en TASK:it 1-1 per nenä ja tehtiin asiat vuorotelleen, kun kuitenkin molemmat oli kärryllä. 
+Yhteisten kommittien säätäminen tuntui hieman vaivalloiselta, joten luovuimme ideasta ja jaoimme mieluummin USER STORY:en TASK:it 1-1 per nenä ja tehtiin asiat vuorotelleen, kun kuitenkin molemmat oli kärryllä. 
 
 ## Sprintien läpikäynti
 
@@ -25,11 +25,11 @@ Tuntui vähän ikävältä parikoodamisen yhteisten kommittien säätäminen, jo
     Kerrataan jokaisen sprintin aikana kohdatut ongelmat (prosessiin-, projektityöskentelyyn- ja teknisiin asioihin liittyvät)
 -->
 
-Simuloitiin työpaikan ympäristö ja harrastettiin Scrum:in toiminnat tässä 4 viikon aikana, jokaisen Sprintimme pituus oli 1 viikko, jäsenet kulutti suunnilleen 6 tuntia/nenä/sprintti. Ensimmäistä Sprintiä lukuunottamatta pidettiin retrospektiivi Sprintien lopussa. Alla käydään läpi yksittäisten jaksojen sisällöt/tapahtumat.
+Simuloitiin työelämän ympäristöä ja toimimme Scrum:in mukaisesti 4 viikon ajan. Jokaisen Sprintimme pituus oli yksi viikko, jonka aikana tiimiläisillä oli työtunteja käytössään suunnilleen 6 tuntia/henkilö. Ensimmäistä Sprintiä lukuunottamatta pidettiin retrospektiivi Sprintien lopussa. Alla käydään läpi yksittäisten jaksojen sisällöt/tapahtumat.
 
 ### Sprint 1
 
-Tehtiin Definition of Done ja otettiin käyttöön placeholder yksikkötestit. Alusta lähtien pyrimme modulaarisesti rakentaa ylös sovelluksemme, `app.py` sisälsi sovelluslogiika, `main.py` sisälsi käyttäjä-interaktioon liittyviä asioita. Sovittiin, että noudataan feature-branch:ien käyttöä, jota otimme noin vakavasti, ettei sallittiin PR:in merge:eä niin pitkään kuin jokin moduuli ei sisältänyt pelkästään sinne kuuluvia osia. CI pipeline rakennettu.
+Tehtiin Definition of Done ja otettiin käyttöön placeholder yksikkötestit. Alusta lähtien pyrimme rakentamaan sovelluksemme modulaarisesti, `app.py` sisälsi sovelluslogiikan, `main.py` sisälsi käyttäjä-interaktioon liittyviä asioita. Sovittiin, että noudatetaan feature-branch:ien käyttöä. Pidimme tästä tiukasti kiinni, emmekä sallineet PR:in merge:eä ennen kuin mergettävä branch oli DOD mukainen. Pyrimme huolehtimaan myös, että kuhunkin moduuliin sisällytettiin ainoastaan siihen kuuluvia osia. CI pipeline rakennettu.
 
 Tärkeämmät edistykset sprintin aikana:
 - User can add entry
@@ -37,8 +37,8 @@ Tärkeämmät edistykset sprintin aikana:
 
 ### Sprint 2
 
-Otettiin käyttöön pylint, tehtiin HELP funktio joka kuvaa komentojen toimintaa käyttäjälle, muotoiltiin asiakasvaatimusten mukaiseksi listauskomennomme tulosteen. Haku- ja poistotoiminnat tulivat implementoiduksi. Tehtiin ensimmäiset kattavammat yksikkötestit ja luopuimme placeholder yksikkötesteista. Robot Framework:in alustavat testit tuli käyttöönotetuksi.
-Tämän jakson aikana törmättiin eri user story:en aikataulutusongelmaan, jossa toinen jäsen teki noin 90% valmiustilaan 1 toiminnan ja joutui odottaa toisen jäsenen tekemän toiminnan valmistumista. Todettiin retrossa, että parikoodaus on hyödyllinen.
+Otimme käyttöön pylint:in, teimme HELP funktion, joka kuvaa komentojen toimintaa käyttäjälle sekä muotoilimme listauskomentomme tulosteen asiakasvaatimuksen mukaiseksi. Implementoimme haku- ja poistotoiminnot. Teimme ensimmäiset kattavammat yksikkötestit ja luovuimme placeholder yksikkötesteistä. Otimme käyttöön Robot Framework:in alustavat testit.
+Tämän jakson aikana törmäsimme eri user story:en aikataulutusongelmaan, jossa toinen jäsen teki noin 90% valmiustilaan yhden toiminnon ja joutui odottamaan toisen jäsenen vastuulla olleen toiminnon valmistumista. Todettiin retrossa, että daily scrum, kommunikaation parantaminen ja parikoodaus olisivat hyödyllisiä.
 
 Tärkeämmät kohdat sprintin aikana:
 - User can filter entries
@@ -46,8 +46,8 @@ Tärkeämmät kohdat sprintin aikana:
 
 ### Sprint 3
 
-Implementoimme DOI importin linkin kautta, sekä export ja import toiminnat. Eristettiin käyttöliittymään liittyvät asiat `ui.py` moduuliin. Estimme identisten title kenttien lisäämistä. Robot testien siivous.
-Tässä sprintissä tehtiin enempää parikoodausta.
+Implementoimme DOI importin linkin kautta, sekä export ja import toiminnot. Eristettiin käyttöliittymään liittyvät asiat `ui.py` moduuliin. Estimme identisten title kenttien lisäämisen. Robot testien siivous.
+Tässä sprintissä tehtiin enemmän parikoodausta ja parannettiin kommunikaatiota. Sprintin retrossa totetisimme, että kommunikaatio oli parantunut mm. daily scrumien seurauksena. Totesimme, että jatkamme niitä ja panostamme myös odottelun (hukka) vähentämiseen reagoimalla mahdollisimman nopeasti Pull Request:hin
 
 <!--oliko RETRO:ssa mitää merkittävää sanottu?-->
 
@@ -57,7 +57,7 @@ Tärkeämmät kohdat:
 
 ### Sprint 4
 
-Tässä jaksossa tapahtui loppuviimeistely, suurin osa muutoksista koski makuasiat, kuten formatoinnit ja sovelluksen yksityiskohtien hienosäädelyt. Törmättiin uudeelleen aikataulutusongelmaan, joka näkyi siinä, että 2 feature branch sisälsi samat (main haaraan) sulaamattomat commitit.
+Tämä sprintti sisälti paljon loppuviimeistelyä, kuten formatointeja ja sovelluksen yksityiskohtien hienosäätöjä. Törmäsimme uudeelleen aikataulutusongelmaan, joka ilmeni siten, että kaksi feature branchia sisälsi samat (main haaraan) yhdistämättömät commitit. Tämä tarjosi toisaalta ihan mielenkiintoisen oppimiskokemuksen merge conflictin ratkaisemisesta.
 
 <!-- täydennetään jälkikäteen, vaikka perjantai illalla -->
 
