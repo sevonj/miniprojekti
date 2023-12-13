@@ -310,9 +310,10 @@ def search_doi(io, app: App):
     if success and search_result.startswith(" @"):
         success, entry = app.parse_entry_from_bibtex(search_result)
         if success:
+            citekey = app.generate_citekey(entry)
             io.print(
                 tabulate(
-                    format_entries({doi: entry}, DEFAULT_FIELDS),
+                    format_entries({citekey: entry}, DEFAULT_FIELDS),
                     headers="keys",
                 ),
                 "\n",
