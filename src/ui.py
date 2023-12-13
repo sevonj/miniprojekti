@@ -34,14 +34,10 @@ def format_entries(entries: list, fields=None) -> list:
         # No custom field keys given. Return citekey + all fields
         if fields is None:
             entrydict["citekey"] = citekey  # Citekey
-            entrydict["author"] = format_authors(
-                entry.persons.get("author", [])
-            )
+            entrydict["author"] = format_authors(entry.persons.get("author", []))
             for field in entry.fields:  # Get all fields
                 if field.lower() == "title":
-                    entrydict["title"] = limit_str_len(
-                        entry.fields.get(field, "N/A")
-                    )
+                    entrydict["title"] = limit_str_len(entry.fields.get(field, "N/A"))
                     continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
@@ -60,9 +56,7 @@ def format_entries(entries: list, fields=None) -> list:
                     )
                     continue
                 if field.lower() == "title":
-                    entrydict["Title"] = limit_str_len(
-                        entry.fields.get(field, "N/A")
-                    )
+                    entrydict["Title"] = limit_str_len(entry.fields.get(field, "N/A"))
                     continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
@@ -154,26 +148,40 @@ def get_entries(io, app: App):
 def add_entry(io, app: App):
     """UI fn: Add a new entry"""
     io.print("Enter article citation details:")
-    author = io.input("Author: ")
-    title = io.input("Title: ")
-    journal = io.input("Journal: ")
-    year = io.input("Year: ")
-    volume = io.input("Volume: ")
-    number = io.input("Number: ")
-    pages = io.input("Pages: ")
+
+    fieldstoask = [
+        "author",
+        "title",
+        "journal",
+        "year",
+        "volume",
+        "number",
+        "pages",
+    ]
+    authors = ""
+    fields = {}
+    for field in fieldstoask:
+        prompt = field.capitalize() + ": "
+        value = io.input(prompt)
+
+        # Force required
+        if field in {"author", "title"}:
+            while value == "":
+                value = io.input("This field is required!\n" + prompt)
+
+        # Author isn't a normal field
+        if field == "author":
+            authors = value
+            continue
+
+        if value != "":
+            fields[field] = value
 
     # Create an Entry object representing the article citation
     entry = Entry(
         "article",
-        persons={"author": [Person(name) for name in author.split(" and ")]},
-        fields={
-            "title": title,
-            "journal": journal,
-            "year": year,
-            "volume": volume,
-            "number": number,
-            "pages": pages,
-        },
+        persons={"author": [Person(name) for name in authors.split(" and ")]},
+        fields=fields,
     )
 
     # Add the entry to the Bibliography
@@ -276,13 +284,9 @@ def del_entries(io, app: App):
 def save_entries(io, app: App):
     """UI fn for saving entries to a .bib-file"""
     path = realpath("./bib_export.bib")
-    reply = io.input(
-        "Enter file name, e.g. export or export.bib [bib_export.bib] "
-    )
+    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(
-            f"./{reply if reply.endswith('.bib') else reply +'.bib'}"
-        )
+        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.save_to_file(path)
@@ -296,13 +300,9 @@ def load_entries(io, app: App):
 
     path = realpath("./bib_export.bib")
 
-    reply = io.input(
-        "Enter file name, e.g. export or export.bib [bib_export.bib] "
-    )
+    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(
-            f"./{reply if reply.endswith('.bib') else reply +'.bib'}"
-        )
+        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.load_from_file(path)
