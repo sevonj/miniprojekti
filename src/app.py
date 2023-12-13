@@ -5,7 +5,7 @@ This module contains the service which the UI code can call.
 It should be kept UI-independent; No UI code here.
 
 """
-from uuid import uuid4
+import string
 import urllib.request
 from urllib.error import HTTPError
 from pybtex.database import (
@@ -85,7 +85,7 @@ class App:
         return:
             Error message: None | str
         """
-        key = str(uuid4())
+        key = self.generate_citekey(entry)
         entries = self._bib_data.entries
         title = entry.fields.get("title")
 
@@ -97,6 +97,38 @@ class App:
 
         self._bib_data.add_entry(key, entry)
         return None
+
+    def generate_citekey(self, entry: Entry) -> str:
+        """Generate an unique citekey for an entry
+
+        Args:
+            entry: the entry to generate a citekey for
+
+        Returns:
+            the generated citekey
+        """
+
+        # Get first author's last name
+        author = "N/A"
+        authors = entry.persons.get("author")
+        if authors and len(authors) > 0 and len(authors[0].last_names) > 0:
+            author = authors[0].last_names[0]
+
+        # Get year
+        year = entry.fields.get("year", "N/A")
+
+        # Create citekey
+        citekey = f"{author}{year}"
+
+        # Check if citekey already exists and add a letter if it does
+        entries = self._bib_data.entries
+        if citekey in entries:
+            for char in string.ascii_lowercase:
+                new_citekey = f"{citekey}{char}"
+                if new_citekey not in entries:
+                    return new_citekey
+
+        return citekey
 
     def del_entries(self, entry_indices: list[int]):
         """Deletes select entries, or all.
