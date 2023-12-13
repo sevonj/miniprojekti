@@ -355,7 +355,7 @@ def edit_entry(io, app: App):
     edited_field_value = io.input("Input the edition you want: ")
 
     success = app.edit_entry(citekey, field_to_edit, edited_field_value)
-    if success:
-        io.print("Entry edited successfully!")
+    if success[1]:
+        io.print(success[0])
     else:
-        io.print("Invalid Field or Entry with the provided citekey was not found.")
+        io.print(success[0])

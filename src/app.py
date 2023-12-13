@@ -246,16 +246,20 @@ class App:
         ]:
             return False
 
+        if field_to_edit == "title" or field_to_edit == "author":
+            if len(edited_value) == 0:
+                return ("Title or Author must contain something", None)
+
         if citekey in self._bib_data.entries:
             entry = self._bib_data.entries[citekey]
             if field_to_edit == "author":
                 entry.persons["author"] = [
                     Person(name) for name in edited_value.split(" and ")
                 ]
-                return True
+                return ("Edition Successful", True)
             entry.fields[field_to_edit.lower()] = edited_value
-            return True
-        return False
+            return ("Edition Successful", True)
+        return ("Invalid Citekey", False)
 
     def find_entries_by_citekey(self, searched):
         """Find an entry where the searched word is the citekey.
