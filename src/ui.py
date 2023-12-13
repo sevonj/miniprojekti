@@ -9,7 +9,7 @@ import re
 from os.path import realpath
 from pybtex.database import Entry, Person, PybtexError
 from tabulate import tabulate
-from app import App
+from app import App, FIELDS_TO_PROMPT
 
 DEFAULT_FIELDS = ["citekey", "author", "title", "journal", "year"]
 DEFAULT_LIMIT = 40
@@ -153,18 +153,9 @@ def add_entry(io, app: App):
     """UI fn: Add a new entry"""
     io.print("Enter article citation details:")
 
-    fieldstoask = [
-        "author",
-        "title",
-        "journal",
-        "year",
-        "volume",
-        "number",
-        "pages",
-    ]
     authors = ""
     fields = {}
-    for field in fieldstoask:
+    for field in FIELDS_TO_PROMPT:
         prompt = field.capitalize() + ": "
         value = io.input(prompt)
 
