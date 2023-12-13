@@ -217,12 +217,12 @@ def del_entries(io, app: App):
     reply = (
         io.input(
             dedent(
-                """
-        Which entries do you want to remove? Type either:
-        - indeces separated by whitespace, e.g. '0 1 5'
-        - or the word 'ALL' to remove all entries:
+                """\
+                Which entries do you want to remove? Type either:
+                - indeces separated by whitespace, e.g. '0 1 5'
+                - or the word 'ALL' to remove all entries:
 
-        [none]: """
+                [none]: """
             )
         )
         .upper()
@@ -347,10 +347,10 @@ def edit_entry(io, app: App):
     if not entry_to_edit:
         io.print("No matching entry was found with the given Citekey.")
         return
-    field_to_edit = io.input(
+    field_to_edit = io.input(dedent(
         """Input the field that want to edit in the entry
-                        (author, title, journal, year, volume, number, pages): """
-    ).lower()
+        (author, title, journal, year, volume, number, pages): """
+    )).lower()
 
     edited_field_value = io.input("Input the edition you want: ")
 
