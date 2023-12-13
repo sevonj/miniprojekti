@@ -34,10 +34,12 @@ def format_entries(entries: list, fields=None) -> list:
         # No custom field keys given. Return citekey + all fields
         if fields is None:
             entrydict["citekey"] = citekey  # Citekey
-            entrydict["author"] = format_authors(entry.persons.get("author", []))
+            entrydict["author"] = format_authors(
+                entry.persons.get("author", []))
             for field in entry.fields:  # Get all fields
                 if field.lower() == "title":
-                    entrydict["title"] = limit_str_len(entry.fields.get(field, "N/A"))
+                    entrydict["title"] = limit_str_len(
+                        entry.fields.get(field, "N/A"))
                     continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
@@ -56,7 +58,8 @@ def format_entries(entries: list, fields=None) -> list:
                     )
                     continue
                 if field.lower() == "title":
-                    entrydict["Title"] = limit_str_len(entry.fields.get(field, "N/A"))
+                    entrydict["Title"] = limit_str_len(
+                        entry.fields.get(field, "N/A"))
                     continue
                 entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
 
@@ -271,9 +274,11 @@ def del_entries(io, app: App):
 def save_entries(io, app: App):
     """UI fn for saving entries to a .bib-file"""
     path = realpath("./bib_export.bib")
-    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    reply = io.input(
+        "Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+        path = realpath(
+            f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.save_to_file(path)
@@ -287,9 +292,11 @@ def load_entries(io, app: App):
 
     path = realpath("./bib_export.bib")
 
-    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    reply = io.input(
+        "Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+        path = realpath(
+            f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.load_from_file(path)
@@ -339,7 +346,8 @@ def edit_entry(io, app: App):
     if not entries:
         io.print("There are no entries to edit.")
         return
-    citekey = io.input("Input the Citekey for the Entry you would like to edit: ")
+    citekey = io.input(
+        "Input the Citekey for the Entry you would like to edit: ")
     if not citekey:
         io.print("Citekey is missing, search cancelled.")
         return
@@ -347,16 +355,15 @@ def edit_entry(io, app: App):
     if not entry_to_edit:
         io.print("No matching entry was found with the given Citekey.")
         return
-    
-    ALLOWED_FIELDS = "author,title,journal,year,volume,pages".split(",")
+
+    allowed_fields = "author,title,journal,year,volume,pages".split(",")
     field_to_edit = io.input(dedent(
         f"""\
         Input the field that want to edit in the entry
-        ({', '.join(ALLOWED_FIELDS)}): """
+        ({', '.join(allowed_fields)}): """
     )).lower()
 
-    
-    if field_to_edit.lower() not in ALLOWED_FIELDS:
+    if field_to_edit.lower() not in allowed_fields:
         io.print(f"Unrecognized field: <{field_to_edit}>")
         return
 
