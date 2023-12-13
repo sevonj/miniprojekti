@@ -347,10 +347,18 @@ def edit_entry(io, app: App):
     if not entry_to_edit:
         io.print("No matching entry was found with the given Citekey.")
         return
+    
+    ALLOWED_FIELDS = "author,title,journal,year,volume,pages".split(",")
     field_to_edit = io.input(dedent(
-        """Input the field that want to edit in the entry
-        (author, title, journal, year, volume, number, pages): """
+        f"""\
+        Input the field that want to edit in the entry
+        ({', '.join(ALLOWED_FIELDS)}): """
     )).lower()
+
+    
+    if field_to_edit.lower() not in ALLOWED_FIELDS:
+        io.print(f"Unrecognized field: <{field_to_edit}>")
+        return
 
     edited_field_value = io.input("Input the edition you want: ")
 
