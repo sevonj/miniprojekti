@@ -9,7 +9,7 @@ import re
 from os.path import realpath
 from pybtex.database import Entry, Person, PybtexError
 from tabulate import tabulate
-from app import App
+from app import App, FIELDS_TO_PROMPT
 
 DEFAULT_FIELDS = ["citekey", "author", "title", "journal", "year"]
 DEFAULT_LIMIT = 40
@@ -152,26 +152,31 @@ def get_entries(io, app: App):
 def add_entry(io, app: App):
     """UI fn: Add a new entry"""
     io.print("Enter article citation details:")
-    author = io.input("Author: ")
-    title = io.input("Title: ")
-    journal = io.input("Journal: ")
-    year = io.input("Year: ")
-    volume = io.input("Volume: ")
-    number = io.input("Number: ")
-    pages = io.input("Pages: ")
+
+    authors = ""
+    fields = {}
+    for field in FIELDS_TO_PROMPT:
+        prompt = field.capitalize() + ": "
+        value = io.input(prompt)
+
+        # Force required
+        if field in {"author", "title"}:
+            while value == "":
+                value = io.input("This field is required!\n" + prompt)
+
+        # Author isn't a normal field
+        if field == "author":
+            authors = value
+            continue
+
+        if value != "":
+            fields[field] = value
 
     # Create an Entry object representing the article citation
     entry = Entry(
         "article",
-        persons={"author": [Person(name) for name in author.split(" and ")]},
-        fields={
-            "title": title,
-            "journal": journal,
-            "year": year,
-            "volume": volume,
-            "number": number,
-            "pages": pages,
-        },
+        persons={"author": [Person(name) for name in authors.split(" and ")]},
+        fields=fields,
     )
 
     # Add the entry to the Bibliography

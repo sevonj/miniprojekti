@@ -18,6 +18,15 @@ from pybtex.database import (
 )
 
 BASE_DOI_URL = "http://dx.doi.org/"
+FIELDS_TO_PROMPT = [
+    "author",
+    "title",
+    "journal",
+    "year",
+    "volume",
+    "number",
+    "pages",
+]
 
 
 class App:
@@ -235,18 +244,10 @@ class App:
         Returns:
             True if the entry was edited successfully, False otherwise
         """
-        if field_to_edit not in [
-            "author",
-            "title",
-            "journal",
-            "year",
-            "volume",
-            "number",
-            "pages",
-        ]:
+        if field_to_edit not in FIELDS_TO_PROMPT:
             return False
 
-        if field_to_edit in ["author","title"]:
+        if field_to_edit in ["author", "title"]:
             if len(edited_value) == 0:
                 return ("Title or Author must contain something", None)
 
