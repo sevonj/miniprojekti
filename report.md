@@ -3,7 +3,7 @@
 Ryhmän kaikki jäsenet ovat antaneet vertaispalautetta [täältä](https://study.cs.helsinki.fi/stats/courses/ohtu2023/miniproject) ("Create peer review" napin takaa) **viimeistään perjantaina 22.12. klo 23:59**
 - [X] Juho Paananen
 - [ ] Julius Sevon
-- [ ] Miina Saromaa
+- [X] Miina Saroma
 - [ ] Mudar Algayal
 - [X] Tamás Tóth
 
@@ -41,7 +41,7 @@ Otimme käyttöön pylint:in, teimme HELP funktion, joka kuvaa komentojen toimin
 Tämän jakson aikana törmäsimme eri user story:en aikataulutusongelmaan, jossa toinen jäsen teki noin 90% valmiustilaan yhden toiminnon ja joutui odottamaan toisen jäsenen vastuulla olleen toiminnon valmistumista. Todettiin retrossa, että daily scrum, kommunikaation parantaminen ja parikoodaus olisivat hyödyllisiä.
 
 Tärkeämmät kohdat sprintin aikana:
-- User can filter entries
+- User can search entries
 - User can delete entries
 
 ### Sprint 3
