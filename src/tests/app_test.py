@@ -345,3 +345,31 @@ class TestApp(unittest.TestCase):
 
         # unsuccessful parsing returns tuple starting with False
         self.assertFalse(success)
+
+    def test_generate_citekey_generates_correct_citekey(self):
+        test_entry = TEST_ENTRY
+
+        # generated citekey should be correct
+        self.assertEqual(self.app.generate_citekey(test_entry), "Lastname1970")
+
+    def test_generate_citekey_generates_correct_citekey_with_duplicate(self):
+        # adding an general test entry
+        test_entry = TEST_ENTRY
+
+        self.app.add_entry(test_entry)
+
+        # adding a second entry with the same author and year but different title
+        second_entry = Entry(
+            "article",
+            persons={"author": [Person("Lastname, Firstname")]},
+            fields={
+                "title": "This is not the same title",
+                "journal": "Journal Name",
+                "year": "1970",
+                "volume": "1",
+                "pages": "10",
+            },
+        )
+
+        # generated citekey should be correct
+        self.assertEqual(self.app.generate_citekey(second_entry), "Lastname1970a")
