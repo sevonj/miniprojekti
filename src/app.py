@@ -246,7 +246,7 @@ class App:
         ]:
             return False
 
-        if field_to_edit == "title" or field_to_edit == "author":
+        if field_to_edit in ["author","title"]:
             if len(edited_value) == 0:
                 return ("Title or Author must contain something", None)
 
