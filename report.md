@@ -49,8 +49,6 @@ Tärkeämmät kohdat sprintin aikana:
 Implementoimme DOI importin linkin kautta, sekä export ja import toiminnot. Eristettiin käyttöliittymään liittyvät asiat `ui.py` moduuliin. Estimme identisten title kenttien lisäämisen. Robot testien siivous.
 Tässä sprintissä tehtiin enemmän parikoodausta ja parannettiin kommunikaatiota. Sprintin retrossa totetisimme, että kommunikaatio oli parantunut mm. daily scrumien seurauksena. Totesimme, että jatkamme niitä ja panostamme myös odottelun (hukka) vähentämiseen reagoimalla mahdollisimman nopeasti Pull Request:hin
 
-<!--oliko RETRO:ssa mitää merkittävää sanottu?-->
-
 Tärkeämmät kohdat:
 - DOI perusteella import
 - export/import toiminnat
@@ -58,8 +56,6 @@ Tärkeämmät kohdat:
 ### Sprint 4
 
 Tämä sprintti sisälti paljon loppuviimeistelyä, kuten formatointeja ja sovelluksen yksityiskohtien hienosäätöjä. Törmäsimme uudeelleen aikataulutusongelmaan, joka ilmeni siten, että kaksi feature branchia sisälsi samat (main haaraan) yhdistämättömät commitit. Tämä tarjosi toisaalta ihan mielenkiintoisen oppimiskokemuksen merge conflictin ratkaisemisesta.
-
-<!-- täydennetään jälkikäteen, vaikka perjantai illalla -->
 
 Tärkeämmät kohdat:
 - Improved author and title formatting
