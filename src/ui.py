@@ -184,7 +184,7 @@ def add_entry(io, app: App):
         app.add_entry(entry)
         io.print("Entry successfully added to the database.")
     except TitleAlreadyExists as e:
-        print(e)
+        io.print(e)
 
 def search_entries(io, app: App):
     """UI fn: Search for an entry"""
