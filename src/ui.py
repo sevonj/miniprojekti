@@ -8,7 +8,93 @@ from textwrap import dedent
 import re
 from os.path import realpath
 from pybtex.database import Entry, Person, PybtexError
-from app import App
+from tabulate import tabulate
+from app import App, FIELDS_TO_PROMPT
+
+DEFAULT_FIELDS = ["citekey", "author", "title", "journal", "year"]
+DEFAULT_LIMIT = 40
+
+
+def format_entries(entries: list, fields=None) -> list:
+    """Makes entries into a friendlier for further use, such as tabulate.
+
+    Args:
+        entries (list): List of entries
+        fields (list[str]): (optional) (case-insensitive):
+            Choose specific fields for the output. Leave out for `DEFAULT_ENTRIES`.
+            Example: ["idx", "citekey", "Author", "YEAR", "nonexistent-field"]
+
+    Returns:
+        entries (list[dict]): Entries are dicts. Keys are field names and capitalized.
+    """
+    ret_entries = []
+    for idx, (citekey, entry) in enumerate(entries.items()):
+        entrydict = {}
+
+        # No custom field keys given. Return citekey + all fields
+        if fields is None:
+            entrydict["citekey"] = citekey  # Citekey
+            entrydict["author"] = format_authors(
+                entry.persons.get("author", []))
+            for field in entry.fields:  # Get all fields
+                if field.lower() == "title":
+                    entrydict["title"] = limit_str_len(
+                        entry.fields.get(field, "N/A"))
+                    continue
+                entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
+
+        # Custom field keys were given. Return whichever fields were asked.
+        else:
+            for field in fields:
+                if field.lower() == "idx":
+                    entrydict["Idx"] = idx
+                    continue
+                if field.lower() == "citekey":
+                    entrydict["Citekey"] = citekey
+                    continue
+                if field.lower() == "author":
+                    entrydict["Author"] = format_authors(
+                        entry.persons.get("author", [])
+                    )
+                    continue
+                if field.lower() == "title":
+                    entrydict["Title"] = limit_str_len(
+                        entry.fields.get(field, "N/A"))
+                    continue
+                entrydict[field.capitalize()] = entry.fields.get(field, "N/A")
+
+        ret_entries.append(entrydict)
+
+    return ret_entries
+
+
+def limit_str_len(string: str, limit=DEFAULT_LIMIT) -> str:
+    """Limits the length of a string to a given limit.
+    Args:
+        string (str): The string to be limited
+        limit (int): The limit of the string length
+
+    Returns:
+        str: The limited string
+    """
+    if len(string) > limit:
+        return string[:limit] + "..."
+    return string
+
+
+def format_authors(authors):
+    """
+    Format a list of authors to Author et al if over 3 authors
+    params: list of Person objects
+    Returns: string of formatted authors
+    """
+    if len(authors) > 3:
+        return f"{authors[0]} et al."
+
+    authorstring = f"{authors[0]}"
+    for i in range(1, len(authors)):
+        authorstring += f" and {authors[i]}"
+    return authorstring
 
 
 def print_help(io):
@@ -30,6 +116,7 @@ Available commands (case-insensitive):
         "SEARCH": "Search for an entry by title",
         "SAVE": "Save entries to a .bib-file. Overwrites data",
         "LOAD": "Loads entries from a .bib-file",
+        "EDIT": "Edits a specific field of a specific entry",
     }
 
     # Force alphabetical order
@@ -46,41 +133,50 @@ Available commands (case-insensitive):
 
 def get_entries(io, app: App):
     """UI fn: Print all entries"""
-    # Check if there are any entries and print infomessage is there are none
-    if app.get_entries()[0] is None:
-        io.print(app.get_entries()[1])
+    entries = app.get_entries()[0]
+
+    if entries is None or len(entries) == 0:
+        io.print("No entries found.")
         return
 
-    # Get entries and print tabulated form
-    io.print(app.tabulate_entries(app.get_entries()[0]))
-
-    # Print infomessage when successfully retrieved entries
-    io.print(app.get_entries()[1])
+    io.print("Succesfully retrieved entries:\n")
+    io.print(
+        tabulate(
+            format_entries(entries, DEFAULT_FIELDS),
+            headers="keys",
+        ),
+        "\n",
+    )
 
 
 def add_entry(io, app: App):
     """UI fn: Add a new entry"""
     io.print("Enter article citation details:")
-    author = io.input("Author: ")
-    title = io.input("Title: ")
-    journal = io.input("Journal: ")
-    year = io.input("Year: ")
-    volume = io.input("Volume: ")
-    number = io.input("Number: ")
-    pages = io.input("Pages: ")
+
+    authors = ""
+    fields = {}
+    for field in FIELDS_TO_PROMPT:
+        prompt = field.capitalize() + ": "
+        value = io.input(prompt)
+
+        # Force required
+        if field in {"author", "title"}:
+            while value == "":
+                value = io.input("This field is required!\n" + prompt)
+
+        # Author isn't a normal field
+        if field == "author":
+            authors = value
+            continue
+
+        if value != "":
+            fields[field] = value
 
     # Create an Entry object representing the article citation
     entry = Entry(
         "article",
-        persons={"author": [Person(name) for name in author.split(" and ")]},
-        fields={
-            "title": title,
-            "journal": journal,
-            "year": year,
-            "volume": volume,
-            "number": number,
-            "pages": pages,
-        },
+        persons={"author": [Person(name) for name in authors.split(" and ")]},
+        fields=fields,
     )
 
     # Add the entry to the Bibliography
@@ -95,7 +191,13 @@ def search_entries(io, app: App):
     """UI fn: Search for an entry"""
     search = io.input("Search: Enter title of the citation: ")
     filtered_entries = app.find_entries_by_title(search)
-    io.print(app.tabulate_entries(filtered_entries))
+    io.print(
+        tabulate(
+            format_entries(filtered_entries, DEFAULT_FIELDS),
+            headers="keys",
+        ),
+        "\n",
+    )
 
 
 re_idx = re.compile(r"\S+")
@@ -112,17 +214,23 @@ def del_entries(io, app: App):
     valid_index_range = range(len(entries))
     indices_to_remove = set()
 
-    io.print(app.tabulate_entries(entries))
+    io.print(
+        tabulate(
+            format_entries(entries, ["idx"] + DEFAULT_FIELDS),
+            headers="keys",
+        ),
+        "\n",
+    )
 
     reply = (
         io.input(
             dedent(
-                """
-        Which entries do you want to remove? Type either:
-        - indeces separated by whitespace, e.g. '0 1 5'
-        - or the word 'ALL' to remove all entries:
+                """\
+                Which entries do you want to remove? Type either:
+                - indeces separated by whitespace, e.g. '0 1 5'
+                - or the word 'ALL' to remove all entries:
 
-        [none]: """
+                [none]: """
             )
         )
         .upper()
@@ -171,9 +279,11 @@ def del_entries(io, app: App):
 def save_entries(io, app: App):
     """UI fn for saving entries to a .bib-file"""
     path = realpath("./bib_export.bib")
-    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    reply = io.input(
+        "Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+        path = realpath(
+            f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.save_to_file(path)
@@ -187,9 +297,11 @@ def load_entries(io, app: App):
 
     path = realpath("./bib_export.bib")
 
-    reply = io.input("Enter file name, e.g. export or export.bib [bib_export.bib] ")
+    reply = io.input(
+        "Enter file name, e.g. export or export.bib [bib_export.bib] ")
     if reply:
-        path = realpath(f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
+        path = realpath(
+            f"./{reply if reply.endswith('.bib') else reply +'.bib'}")
 
     try:
         app.load_from_file(path)
@@ -204,19 +316,66 @@ def search_doi(io, app: App):
     if not doi:
         io.print("DOI is missing, search cancelled.")
         return
-    search_result = app.get_bibtex_by_doi(doi)
-    if search_result.startswith(" @"):
-        entry = app.parse_entry_from_bibtex(search_result)
-        temp_dict = {doi: entry}
-        io.print(app.tabulate_entries(temp_dict))
-        confirm_add = io.input(
-            "Entry successfully retrieved. Would you like to add it to bibliography? y/N:"
-        )
-        if confirm_add.upper().strip() == "Y":
-            app.add_entry(entry)
-            io.print("Entry successfully saved to the database.")
+
+    success, search_result = app.get_bibtex_by_doi(doi)
+
+    if success and search_result.startswith(" @"):
+        success, entry = app.parse_entry_from_bibtex(search_result)
+        if success:
+            citekey = app.generate_citekey(entry)
+            io.print(
+                tabulate(
+                    format_entries({citekey: entry}, DEFAULT_FIELDS),
+                    headers="keys",
+                ),
+                "\n",
+            )
+            confirm_add = io.input(
+                "\nEntry successfully retrieved. Would you like to add it to bibliography? y/N:"
+            )
+            if confirm_add.upper().strip() == "Y":
+                app.add_entry(entry)
+                io.print("\nEntry successfully saved to the database.\n")
+            else:
+                io.print("\nEntry not added.\n")
+                return
         else:
-            io.print("Entry not added.")
-            return
+            io.print(entry)
     else:
         io.print(search_result)
+
+
+def edit_entry(io, app: App):
+    """UI fn for editing entries"""
+    entries = app.get_entries()[0]
+    if not entries:
+        io.print("There are no entries to edit.")
+        return
+    citekey = io.input(
+        "Input the Citekey for the Entry you would like to edit: ")
+    if not citekey:
+        io.print("Citekey is missing, search cancelled.")
+        return
+    entry_to_edit = app.find_entries_by_citekey(citekey)
+    if not entry_to_edit:
+        io.print("No matching entry was found with the given Citekey.")
+        return
+
+    allowed_fields = "author,title,journal,year,volume,pages".split(",")
+    field_to_edit = io.input(dedent(
+        f"""\
+        Input the field that want to edit in the entry
+        ({', '.join(allowed_fields)}): """
+    )).lower()
+
+    if field_to_edit.lower() not in allowed_fields:
+        io.print(f"Unrecognized field: <{field_to_edit}>")
+        return
+
+    edited_field_value = io.input("Input the edition you want: ")
+
+    success = app.edit_entry(citekey, field_to_edit, edited_field_value)
+    if success[1]:
+        io.print(success[0])
+    else:
+        io.print(success[0])

@@ -5,13 +5,28 @@ This module contains the service which the UI code can call.
 It should be kept UI-independent; No UI code here.
 
 """
-from uuid import uuid4
+import string
 import urllib.request
 from urllib.error import HTTPError
-from pybtex.database import BibliographyData, Entry, parse_string, parse_file
-from tabulate import tabulate
+from pybtex.database import (
+    BibliographyData,
+    Entry,
+    parse_string,
+    parse_file,
+    InvalidNameString,
+    Person,
+)
 
 BASE_DOI_URL = "http://dx.doi.org/"
+FIELDS_TO_PROMPT = [
+    "author",
+    "title",
+    "journal",
+    "year",
+    "volume",
+    "number",
+    "pages",
+]
 
 
 class App:
@@ -80,7 +95,7 @@ class App:
         return:
             Error message: None | str
         """
-        key = str(uuid4())
+        key = self.generate_citekey(entry)
         entries = self._bib_data.entries
         title = entry.fields.get("title")
 
@@ -92,6 +107,38 @@ class App:
 
         self._bib_data.add_entry(key, entry)
         return None
+
+    def generate_citekey(self, entry: Entry) -> str:
+        """Generate an unique citekey for an entry
+
+        Args:
+            entry: the entry to generate a citekey for
+
+        Returns:
+            the generated citekey
+        """
+
+        # Get first author's last name
+        author = "N/A"
+        authors = entry.persons.get("author")
+        if authors and len(authors) > 0 and len(authors[0].last_names) > 0:
+            author = authors[0].last_names[0]
+
+        # Get year
+        year = entry.fields.get("year", "N/A")
+
+        # Create citekey
+        citekey = f"{author}{year}"
+
+        # Check if citekey already exists and add a letter if it does
+        entries = self._bib_data.entries
+        if citekey in entries:
+            for char in string.ascii_lowercase:
+                new_citekey = f"{citekey}{char}"
+                if new_citekey not in entries:
+                    return new_citekey
+
+        return citekey
 
     def del_entries(self, entry_indices: list[int]):
         """Deletes select entries, or all.
@@ -113,39 +160,6 @@ class App:
 
         for key in keys:
             del self._bib_data.entries[key]
-
-    def tabulate_entries(self, entries):
-        """Create a table of bibliography entries using the tabulate library
-
-        Args:
-            entries: A list of pybtex Entry objects
-        Returns:
-            A string containing a table of bibliography entries
-        """
-        table_data = []
-        for idx, (key, entry) in enumerate(entries.items()):
-            authors = " and ".join(
-                str(person) for person in entry.persons.get("author", [])
-            )
-            title = entry.fields.get("title", "N/A")
-            journal = entry.fields.get(
-                "journal",
-                entry.fields.get("publisher", "N/A")
-            )
-            year = entry.fields.get("year", "N/A")
-
-            table_data.append([idx, key, authors, title, journal, year])
-
-        return tabulate(
-            table_data, headers=[
-                "ID",
-                "Citekey",
-                "Author",
-                "Title",
-                "Journal",
-                "Year"
-            ]
-        )
 
     def find_entries_by_title(self, searched):
         """Find all entries where searched word is included the title.
@@ -187,11 +201,11 @@ class App:
         try:
             with urllib.request.urlopen(req) as f:
                 bibtex_entry = f.read().decode()
-            return bibtex_entry
+            return True, bibtex_entry
         except HTTPError as e:
             if e.code == 404:
-                return "DOI not found."
-            return "Service unavailable."
+                return False, "\n\tDOI not found.\n"
+            return False, "\n\tService unavailable.\n"
 
     def parse_entry_from_bibtex(self, bibtex_entry):
         """Parse a BibTeX entry
@@ -199,7 +213,68 @@ class App:
         Args:
             bibtex_entry: A BibTeX entry as a string
         Returns:
-            A pybtex Entry object
+            A tuple of (success, Entry)
+            success: A boolean indicating whether the parsing was successful
+            Entry: Entry or an error message
         """
-        bib_data = parse_string(bibtex_entry, "bibtex")
-        return list(bib_data.entries.values())[0]
+        try:
+            bib_data = parse_string(bibtex_entry, "bibtex")
+
+            # Return the first entry in the BibliographyData object
+            return True, list(bib_data.entries.values())[0]
+
+        except InvalidNameString as e:
+            return (
+                False,
+                f"\n\tInvalid name format encountered: {e} "
+                "\n\tPlease enter citation manually using ADD command.\n",
+            )
+
+        except Exception as e:  # pylint: disable=broad-except
+            return False, f"\n\tAn error occured while parsing the BibTex entry: {e}\n"
+
+    def edit_entry(self, citekey, field_to_edit, edited_value):
+        """Edit an entry's field.
+
+        Args:
+            citekey: A string, the citekey of the entry to be edited
+            field_to_edit: A string, the field to be edited
+            edited_value: A string, the new value for the field
+
+        Returns:
+            True if the entry was edited successfully, False otherwise
+        """
+        if field_to_edit not in FIELDS_TO_PROMPT:
+            return False
+
+        if field_to_edit in ["author", "title"]:
+            if len(edited_value) == 0:
+                return ("Title or Author must contain something", None)
+
+        if citekey in self._bib_data.entries:
+            entry = self._bib_data.entries[citekey]
+            if field_to_edit == "author":
+                entry.persons["author"] = [
+                    Person(name) for name in edited_value.split(" and ")
+                ]
+                return ("Edition Successful", True)
+            entry.fields[field_to_edit.lower()] = edited_value
+            return ("Edition Successful", True)
+        return ("Invalid Citekey", False)
+
+    def find_entries_by_citekey(self, searched):
+        """Find an entry where the searched word is the citekey.
+        Args:
+            searched: A string, the citekey of the searched entry
+        Returns:
+            A pybtex Entry object if found, else None
+        """
+
+        if self.get_entries()[0] is None:
+            return None
+
+        for citekey, entry in self.get_entries()[0].items():
+            if citekey.lower() == searched.lower():
+                return entry
+
+        return None
