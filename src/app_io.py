@@ -1,5 +1,10 @@
 """App IO"""
 
+# simply importing `readline` gives the `input()` function
+# the ability to handle arrow-key navigation
+# instead of printing awkwardness, like "^[[D^[[D^[[D^[[D"
+import readline as _smarter_input_function
+
 
 class AppIO:
     """Injected IO handler"""
@@ -54,6 +59,7 @@ class StubIO:
         """This allows test script to get outputs from the queue"""
 
         if len(self._outputs) == 0:
-            raise RuntimeWarning("Your test asked for output, but there are none left!")
+            raise RuntimeWarning(
+                "Your test asked for output, but there are none left!")
 
         return self._outputs.pop(0)
