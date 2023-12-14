@@ -7,7 +7,7 @@ Ryhmän kaikki jäsenet ovat antaneet vertaispalautetta [täältä](https://stud
 - [ ] Mudar Algayal
 - [X] Tamás Tóth
 
-"Ryhmämme nimettiin dynaamisesti "Ryhmä4". Sovelluksemme on yksinkertainen komentorivi-sovellus jonka avulla pystyy luoda/tuoda/viedä bibliograafisia viitteitä `LaTeX` muodossa (`*.bib` laajennuksella). Taustalla hyödynnetään muutamaa kirjastoa, kuten `pybtex`. Täyden kuvan riippuvuuksistamme saa [täältä](./pyproject.toml).
+Ryhmämme nimettiin dynaamisesti "Ryhmä4". Sovelluksemme on yksinkertainen komentorivi-sovellus jonka avulla pystyy luoda/tuoda/viedä bibliograafisia viitteitä `LaTeX` muodossa (`*.bib` laajennuksella). Taustalla hyödynnetään muutamaa kirjastoa, kuten `pybtex`. Täyden kuvan riippuvuuksistamme saa [täältä](./pyproject.toml).
 
 ## Mikä sujui projektissa hyvin, mitä pitäisi parantaa seuraavaa kertaa varten
 
