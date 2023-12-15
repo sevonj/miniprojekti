@@ -26,3 +26,7 @@ Miniprojekti on täällä
 #### Käyttö:
 - Avaa projektin juurihakemisto terminaalissa
 - Suorita komento `poetry run python src/main.py`
+
+### Raportti
+
+Raportimme löytyy [täältä](./report.md).
