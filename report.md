@@ -2,7 +2,7 @@
 
 Ryhmän kaikki jäsenet ovat antaneet vertaispalautetta [täältä](https://study.cs.helsinki.fi/stats/courses/ohtu2023/miniproject) ("Create peer review" napin takaa) **viimeistään perjantaina 22.12. klo 23:59**
 - [X] Juho Paananen
-- [ ] Julius Sevon
+- [X] Julius Sevon
 - [X] Miina Saroma
 - [ ] Mudar Algayal
 - [X] Tamás Tóth
