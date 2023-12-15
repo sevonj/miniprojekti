@@ -9,7 +9,7 @@ import re
 from os.path import realpath
 from pybtex.database import Entry, Person, PybtexError
 from tabulate import tabulate
-from app import App, FIELDS_TO_PROMPT
+from app import App, TitleAlreadyExists, FIELDS_TO_PROMPT
 
 DEFAULT_FIELDS = ["citekey", "author", "title", "journal", "year"]
 DEFAULT_LIMIT = 40
@@ -180,12 +180,11 @@ def add_entry(io, app: App):
     )
 
     # Add the entry to the Bibliography
-    err = app.add_entry(entry)
-    if err is None:
+    try:
+        app.add_entry(entry)
         io.print("Entry successfully added to the database.")
-    else:
-        print(err)
-
+    except TitleAlreadyExists as e:
+        io.print(e)
 
 def search_entries(io, app: App):
     """UI fn: Search for an entry"""
